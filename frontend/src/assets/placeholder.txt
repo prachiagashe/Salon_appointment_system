@@ -1,0 +1,9 @@
+This folder will contain images for the salon website:
+- hero-image.jpg
+- stylist1.jpg
+- stylist2.jpg
+- stylist3.jpg
+- stylist4.jpg
+- flowers.jpg
+
+For now, the components use placeholder paths. You can replace these with actual images.

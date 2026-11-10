@@ -1,0 +1,513 @@
+/* Color Variables */
+:root {
+  --color-dark-green: #1a2a1a;
+  --color-medium-green: #2d4a2d;
+  --color-light-green: #4a6b4a;
+  --color-accent-green: #6b8f6b;
+  --color-white: #FFFFFF;
+  --color-light-gray: #F8F8F8;
+  --color-text-dark: #1a2a1a;
+  --color-text-light: #8a9a8a;
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--color-dark-green);
+  color: var(--color-white);
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+/* Navbar Styles */
+.navbar {
+  width: 100%;
+  background-color: var(--color-medium-green);
+}
+
+.top-bar {
+  background-color: var(--color-accent-green);
+  padding: 10px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.offer-text {
+  color: var(--color-white);
+  font-weight: 500;
+}
+
+.book-now-btn {
+  background-color: var(--color-accent-green);
+  color: var(--color-white);
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.book-now-btn:hover {
+  background-color: var(--color-light-green);
+}
+
+.main-nav {
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-accent-green);
+}
+
+.nav-logo {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--color-white);
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--color-white);
+}
+
+.nav-links a:hover {
+  color: var(--color-accent-green);
+}
+
+.book-appointment-btn {
+  background-color: var(--color-accent-green);
+  color: var(--color-white);
+  padding: 12px 30px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.book-appointment-btn:hover {
+  background-color: var(--color-light-green);
+  color: var(--color-white);
+}
+
+/* Hero Section */
+.hero {
+  display: flex;
+  min-height: 80vh;
+  background-color: var(--color-medium-green);
+}
+
+.hero-content {
+  flex: 1;
+  padding: 80px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--color-dark-green);
+}
+
+.hero-title {
+  font-size: 56px;
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--color-white);
+  margin-bottom: 30px;
+  font-family: 'Georgia', serif;
+}
+
+.hero-description {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--color-text-light);
+  margin-bottom: 40px;
+  max-width: 600px;
+}
+
+.hero-btn {
+  background-color: var(--color-accent-green);
+  color: var(--color-white);
+  padding: 18px 40px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  align-self: flex-start;
+}
+
+.hero-btn:hover {
+  background-color: var(--color-light-green);
+  color: var(--color-white);
+}
+
+.hero-image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-medium-green);
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Appointment Booking Section */
+.appointment-booking {
+  padding: 80px 40px;
+  background-color: var(--color-medium-green);
+  text-align: center;
+}
+
+.booking-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.booking-title {
+  font-size: 36px;
+  font-weight: 300;
+  color: var(--color-white);
+  margin-bottom: 10px;
+  font-family: 'Georgia', serif;
+}
+
+.booking-subtitle {
+  font-size: 18px;
+  color: var(--color-text-light);
+  margin-bottom: 40px;
+}
+
+.date-selector {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 30px;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.date-btn {
+  padding: 15px 30px;
+  border: 1px solid var(--color-light-green);
+  background-color: var(--color-dark-green);
+  color: var(--color-white);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.date-btn:hover {
+  background-color: var(--color-light-green);
+}
+
+.date-btn.active {
+  background-color: var(--color-accent-green);
+  color: var(--color-white);
+  border-color: var(--color-accent-green);
+}
+
+.time-selector {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 40px;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.time-btn {
+  padding: 15px 30px;
+  border: 1px solid var(--color-light-green);
+  background-color: var(--color-dark-green);
+  color: var(--color-white);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.time-btn:hover {
+  background-color: var(--color-light-green);
+}
+
+.time-btn.active {
+  background-color: var(--color-accent-green);
+  color: var(--color-white);
+  border-color: var(--color-accent-green);
+}
+
+.continue-btn {
+  background-color: var(--color-accent-green);
+  color: var(--color-white);
+  padding: 18px 50px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  display: inline-block;
+}
+
+.continue-btn:hover {
+  background-color: var(--color-light-green);
+  color: var(--color-white);
+}
+
+/* Meet Stylists Section */
+.meet-stylists {
+  padding: 80px 40px;
+  background-color: var(--color-dark-green);
+}
+
+.stylists-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stylists-title {
+  font-size: 36px;
+  font-weight: 300;
+  color: var(--color-white);
+  font-family: 'Georgia', serif;
+}
+
+.view-all-link {
+  font-size: 16px;
+  color: var(--color-white);
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.view-all-link:hover {
+  color: var(--color-accent-green);
+}
+
+.stylists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stylist-card {
+  background-color: var(--color-medium-green);
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.stylist-card:hover {
+  transform: translateY(-5px);
+}
+
+.stylist-image {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--color-accent-green);
+}
+
+.stylist-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stylist-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-white);
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+}
+
+.stylist-role {
+  font-size: 14px;
+  color: var(--color-text-light);
+  margin-bottom: 15px;
+}
+
+.instagram-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.instagram-link:hover {
+  background-color: var(--color-accent-green);
+  color: var(--color-white);
+}
+
+/* Beyond Beauty Section */
+.beyond-beauty {
+  display: flex;
+  min-height: 60vh;
+  background-color: var(--color-medium-green);
+}
+
+.beyond-image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.beyond-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.beyond-content {
+  flex: 1;
+  padding: 80px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--color-dark-green);
+}
+
+.beyond-title {
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--color-white);
+  margin-bottom: 15px;
+  font-family: 'Georgia', serif;
+  letter-spacing: 2px;
+}
+
+.beyond-subtitle {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--color-white);
+  margin-bottom: 25px;
+  font-family: 'Georgia', serif;
+  font-style: italic;
+}
+
+.beyond-description {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--color-text-light);
+  margin-bottom: 40px;
+  max-width: 500px;
+}
+
+.explore-btn {
+  background-color: var(--color-accent-green);
+  color: var(--color-white);
+  padding: 16px 40px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  align-self: flex-start;
+}
+
+.explore-btn:hover {
+  background-color: var(--color-light-green);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .hero {
+    flex-direction: column;
+  }
+  
+  .hero-content {
+    padding: 60px 40px;
+  }
+  
+  .hero-title {
+    font-size: 42px;
+  }
+  
+  .beyond-beauty {
+    flex-direction: column;
+  }
+  
+  .beyond-content {
+    padding: 60px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+  
+  .main-nav {
+    padding: 15px 20px;
+  }
+  
+  .top-bar {
+    padding: 10px 20px;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .hero-title {
+    font-size: 32px;
+  }
+  
+  .hero-description {
+    font-size: 16px;
+  }
+  
+  .date-selector,
+  .time-selector {
+    flex-wrap: wrap;
+  }
+  
+  .stylists-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-title,
+  .stylists-title,
+  .beyond-title {
+    font-size: 28px;
+  }
+}

@@ -1,13 +1,15 @@
-/* Color Variables */
+/* Color Variables - Premium Black and Green Theme */
 :root {
-  --color-dark-green: #1a2a1a;
-  --color-medium-green: #2d4a2d;
-  --color-light-green: #4a6b4a;
-  --color-accent-green: #6b8f6b;
+  --color-primary-bg: #101412;
+  --color-secondary-bg: #171E19;
+  --color-primary-green: #243B32;
+  --color-accent-green: #526B5B;
+  --color-light-bg: #F3F5F1;
   --color-white: #FFFFFF;
-  --color-light-gray: #F8F8F8;
-  --color-text-dark: #1a2a1a;
-  --color-text-light: #8a9a8a;
+  --color-main-text: #F5F5F5;
+  --color-secondary-text: #A8B2AA;
+  --color-border: #303B33;
+  --color-button-hover: #354F41;
 }
 
 /* Global Styles */
@@ -19,8 +21,8 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--color-dark-green);
-  color: var(--color-white);
+  background-color: var(--color-primary-bg);
+  color: var(--color-main-text);
   line-height: 1.6;
 }
 
@@ -40,11 +42,11 @@ button {
 /* Navbar Styles */
 .navbar {
   width: 100%;
-  background-color: var(--color-medium-green);
+  background-color: var(--color-secondary-bg);
 }
 
 .top-bar {
-  background-color: var(--color-accent-green);
+  background-color: var(--color-primary-green);
   padding: 10px 40px;
   display: flex;
   justify-content: space-between;
@@ -53,7 +55,7 @@ button {
 }
 
 .offer-text {
-  color: var(--color-white);
+  color: var(--color-main-text);
   font-weight: 500;
 }
 
@@ -67,7 +69,7 @@ button {
 }
 
 .book-now-btn:hover {
-  background-color: var(--color-light-green);
+  background-color: var(--color-button-hover);
 }
 
 .main-nav {
@@ -75,52 +77,83 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--color-accent-green);
+  border-bottom: 1px solid var(--color-border);
+  gap: 20px;
 }
 
 .nav-logo {
   font-size: 24px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: var(--color-white);
+  color: var(--color-main-text);
+  white-space: nowrap;
 }
 
 .nav-links {
   display: flex;
   gap: 30px;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 }
 
 .nav-links a {
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 1px;
-  color: var(--color-white);
+  color: var(--color-secondary-text);
 }
 
 .nav-links a:hover {
   color: var(--color-accent-green);
 }
 
+.nav-links a.active {
+  color: var(--color-accent-green);
+  font-weight: 600;
+}
+
 .book-appointment-btn {
-  background-color: var(--color-accent-green);
+  background-color: var(--color-primary-green);
   color: var(--color-white);
-  padding: 12px 30px;
+  padding: 8px 18px;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 .book-appointment-btn:hover {
-  background-color: var(--color-light-green);
+  background-color: var(--color-button-hover);
   color: var(--color-white);
+}
+
+.nav-auth {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.login-link,
+.register-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-secondary-text);
+  transition: color 0.3s ease;
+}
+
+.login-link:hover,
+.register-link:hover {
+  color: var(--color-accent-green);
 }
 
 /* Hero Section */
 .hero {
   display: flex;
   min-height: 80vh;
-  background-color: var(--color-medium-green);
+  background-color: var(--color-secondary-bg);
 }
 
 .hero-content {
@@ -129,14 +162,14 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: var(--color-dark-green);
+  background-color: var(--color-primary-bg);
 }
 
 .hero-title {
   font-size: 56px;
   font-weight: 300;
   line-height: 1.2;
-  color: var(--color-white);
+  color: var(--color-main-text);
   margin-bottom: 30px;
   font-family: 'Georgia', serif;
 }
@@ -144,13 +177,13 @@ button {
 .hero-description {
   font-size: 18px;
   line-height: 1.8;
-  color: var(--color-text-light);
+  color: var(--color-secondary-text);
   margin-bottom: 40px;
   max-width: 600px;
 }
 
 .hero-btn {
-  background-color: var(--color-accent-green);
+  background-color: var(--color-primary-green);
   color: var(--color-white);
   padding: 18px 40px;
   border-radius: 4px;
@@ -161,7 +194,7 @@ button {
 }
 
 .hero-btn:hover {
-  background-color: var(--color-light-green);
+  background-color: var(--color-button-hover);
   color: var(--color-white);
 }
 
@@ -170,7 +203,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-medium-green);
+  background-color: var(--color-secondary-bg);
 }
 
 .hero-image img {
@@ -182,7 +215,7 @@ button {
 /* Appointment Booking Section */
 .appointment-booking {
   padding: 80px 40px;
-  background-color: var(--color-medium-green);
+  background-color: var(--color-secondary-bg);
   text-align: center;
 }
 
@@ -194,14 +227,14 @@ button {
 .booking-title {
   font-size: 36px;
   font-weight: 300;
-  color: var(--color-white);
+  color: var(--color-main-text);
   margin-bottom: 10px;
   font-family: 'Georgia', serif;
 }
 
 .booking-subtitle {
   font-size: 18px;
-  color: var(--color-text-light);
+  color: var(--color-secondary-text);
   margin-bottom: 40px;
 }
 
@@ -216,9 +249,9 @@ button {
 
 .date-btn {
   padding: 15px 30px;
-  border: 1px solid var(--color-light-green);
-  background-color: var(--color-dark-green);
-  color: var(--color-white);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-secondary-bg);
+  color: var(--color-main-text);
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
@@ -226,13 +259,13 @@ button {
 }
 
 .date-btn:hover {
-  background-color: var(--color-light-green);
+  background-color: var(--color-primary-green);
 }
 
 .date-btn.active {
-  background-color: var(--color-accent-green);
+  background-color: var(--color-primary-green);
   color: var(--color-white);
-  border-color: var(--color-accent-green);
+  border-color: var(--color-primary-green);
 }
 
 .time-selector {
@@ -246,9 +279,9 @@ button {
 
 .time-btn {
   padding: 15px 30px;
-  border: 1px solid var(--color-light-green);
-  background-color: var(--color-dark-green);
-  color: var(--color-white);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-secondary-bg);
+  color: var(--color-main-text);
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
@@ -256,17 +289,17 @@ button {
 }
 
 .time-btn:hover {
-  background-color: var(--color-light-green);
+  background-color: var(--color-primary-green);
 }
 
 .time-btn.active {
-  background-color: var(--color-accent-green);
+  background-color: var(--color-primary-green);
   color: var(--color-white);
-  border-color: var(--color-accent-green);
+  border-color: var(--color-primary-green);
 }
 
 .continue-btn {
-  background-color: var(--color-accent-green);
+  background-color: var(--color-primary-green);
   color: var(--color-white);
   padding: 18px 50px;
   border-radius: 4px;
@@ -277,14 +310,14 @@ button {
 }
 
 .continue-btn:hover {
-  background-color: var(--color-light-green);
+  background-color: var(--color-button-hover);
   color: var(--color-white);
 }
 
 /* Meet Stylists Section */
 .meet-stylists {
   padding: 80px 40px;
-  background-color: var(--color-dark-green);
+  background-color: var(--color-primary-bg);
 }
 
 .stylists-header {
@@ -300,13 +333,13 @@ button {
 .stylists-title {
   font-size: 36px;
   font-weight: 300;
-  color: var(--color-white);
+  color: var(--color-main-text);
   font-family: 'Georgia', serif;
 }
 
 .view-all-link {
   font-size: 16px;
-  color: var(--color-white);
+  color: var(--color-secondary-text);
   font-weight: 500;
   letter-spacing: 1px;
 }
@@ -324,7 +357,7 @@ button {
 }
 
 .stylist-card {
-  background-color: var(--color-medium-green);
+  background-color: var(--color-secondary-bg);
   padding: 30px;
   border-radius: 8px;
   text-align: center;
@@ -354,14 +387,14 @@ button {
 .stylist-name {
   font-size: 18px;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--color-main-text);
   margin-bottom: 5px;
   letter-spacing: 1px;
 }
 
 .stylist-role {
   font-size: 14px;
-  color: var(--color-text-light);
+  color: var(--color-secondary-text);
   margin-bottom: 15px;
 }
 
@@ -369,7 +402,7 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-white);
+  color: var(--color-secondary-text);
   padding: 8px;
   border-radius: 50%;
   transition: background-color 0.3s ease;
@@ -384,7 +417,7 @@ button {
 .beyond-beauty {
   display: flex;
   min-height: 60vh;
-  background-color: var(--color-medium-green);
+  background-color: var(--color-secondary-bg);
 }
 
 .beyond-image {
@@ -406,13 +439,13 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: var(--color-dark-green);
+  background-color: var(--color-primary-bg);
 }
 
 .beyond-title {
   font-size: 48px;
   font-weight: 300;
-  color: var(--color-white);
+  color: var(--color-main-text);
   margin-bottom: 15px;
   font-family: 'Georgia', serif;
   letter-spacing: 2px;
@@ -421,7 +454,7 @@ button {
 .beyond-subtitle {
   font-size: 24px;
   font-weight: 400;
-  color: var(--color-white);
+  color: var(--color-main-text);
   margin-bottom: 25px;
   font-family: 'Georgia', serif;
   font-style: italic;
@@ -430,13 +463,13 @@ button {
 .beyond-description {
   font-size: 18px;
   line-height: 1.8;
-  color: var(--color-text-light);
+  color: var(--color-secondary-text);
   margin-bottom: 40px;
   max-width: 500px;
 }
 
 .explore-btn {
-  background-color: var(--color-accent-green);
+  background-color: var(--color-primary-green);
   color: var(--color-white);
   padding: 16px 40px;
   border-radius: 4px;
@@ -447,7 +480,7 @@ button {
 }
 
 .explore-btn:hover {
-  background-color: var(--color-light-green);
+  background-color: var(--color-button-hover);
 }
 
 /* Responsive Design */
@@ -475,6 +508,10 @@ button {
 
 @media (max-width: 768px) {
   .nav-links {
+    display: none;
+  }
+
+  .nav-auth {
     display: none;
   }
   

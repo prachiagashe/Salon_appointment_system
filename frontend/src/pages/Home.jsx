@@ -9,7 +9,7 @@ import '../components/Home.css'
 function Home() {
   return (
     <div className="home">
-      <Navbar />
+      <Navbar activePage="home" />
       <Hero />
       <AppointmentBooking />
       <MeetStylists />

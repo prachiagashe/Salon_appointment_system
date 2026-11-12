@@ -14,7 +14,7 @@ function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
@@ -31,7 +31,7 @@ function Register() {
       return
     }
 
-    const result = register({ name, email, phone, password })
+    const result = await register({ name, email, phone, password })
     if (result.success) {
       navigate('/booking')
     } else {

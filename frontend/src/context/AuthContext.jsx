@@ -2,64 +2,86 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext(null)
 
-const USERS_KEY = 'salonease_users'
 const SESSION_KEY = 'salonease_session'
-
-function getUsers() {
-  try {
-    return JSON.parse(localStorage.getItem(USERS_KEY)) || []
-  } catch {
-    return []
-  }
-}
+const API_BASE = 'http://localhost:8000'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
+  const [token, setToken] = useState(null)
 
   useEffect(() => {
     const session = localStorage.getItem(SESSION_KEY)
     if (session) {
       try {
-        setUser(JSON.parse(session))
+        const parsed = JSON.parse(session)
+        setUser(parsed.user)
+        setToken(parsed.token)
       } catch {
         localStorage.removeItem(SESSION_KEY)
       }
     }
   }, [])
 
-  const register = ({ name, email, phone, password }) => {
-    const users = getUsers()
-    if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-      return { success: false, error: 'An account with this email already exists.' }
+  const register = async ({ name, email, phone, password }) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_name: name, email, phone, password })
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        return { success: false, error: data.detail || 'Registration failed.' }
+      }
+      const sessionUser = {
+        id: data.user.id,
+        name: data.user.full_name,
+        email: data.user.email,
+        phone: data.user.phone
+      }
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ user: sessionUser, token: data.access_token }))
+      setUser(sessionUser)
+      setToken(data.access_token)
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: 'Could not reach the server. Please try again.' }
     }
-    const newUser = { id: Date.now(), name, email, phone, password }
-    users.push(newUser)
-    localStorage.setItem(USERS_KEY, JSON.stringify(users))
-    const sessionUser = { id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone }
-    localStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser))
-    setUser(sessionUser)
-    return { success: true }
   }
 
-  const login = ({ email, password }) => {
-    const users = getUsers()
-    const found = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password)
-    if (!found) {
-      return { success: false, error: 'Invalid email or password.' }
+  const login = async ({ email, password }) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        return { success: false, error: data.detail || 'Invalid email or password.' }
+      }
+      const sessionUser = {
+        id: data.user.id,
+        name: data.user.full_name,
+        email: data.user.email,
+        phone: data.user.phone
+      }
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ user: sessionUser, token: data.access_token }))
+      setUser(sessionUser)
+      setToken(data.access_token)
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: 'Could not reach the server. Please try again.' }
     }
-    const sessionUser = { id: found.id, name: found.name, email: found.email, phone: found.phone }
-    localStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser))
-    setUser(sessionUser)
-    return { success: true }
   }
 
   const logout = () => {
     localStorage.removeItem(SESSION_KEY)
     setUser(null)
+    setToken(null)
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated: !!user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   )

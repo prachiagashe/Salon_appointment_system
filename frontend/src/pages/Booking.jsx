@@ -43,7 +43,7 @@ const timeSlots = [
 ]
 
 function Booking() {
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, user, token } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -98,7 +98,10 @@ function Booking() {
     try {
       await fetch('http://localhost:8000/api/appointments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           service_name: service,
           staff_name: staffName,

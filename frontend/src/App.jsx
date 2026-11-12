@@ -7,6 +7,8 @@ import Staff from './pages/Staff'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Booking from './pages/Booking'
+import About from './pages/About'
+import Contact from './pages/Contact'
 import './App.css'
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/services" element={<Services />} />
           <Route path="/staff" element={<Staff />} />
           <Route path="/login" element={<Login />} />

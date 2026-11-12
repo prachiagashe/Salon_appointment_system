@@ -3,10 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.database import Base, engine
-from app.routers import appointments, auth
+from app.routers import appointments, auth, contact
 
 # Import models so SQLAlchemy metadata is fully registered
 from app.models import appointment as _appointment  # noqa: F401
+from app.models import contact as _contact  # noqa: F401
 from app.models import user as _user  # noqa: F401
 
 # Create tables if they don't exist yet
@@ -16,6 +17,7 @@ app = FastAPI(title="SalonEase API", version="1.0.0")
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(appointments.router, prefix="/api/appointments", tags=["appointments"])
+app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
 
 # CORS Configuration
 app.add_middleware(

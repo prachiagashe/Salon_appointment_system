@@ -1,35 +1,17 @@
 /* Navbar Styles — Silken Atelier */
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   width: 100%;
+  z-index: 1000;
   background-color: var(--color-secondary-bg);
 }
 
-.top-bar {
-  background-color: var(--color-primary-green);
-  padding: 10px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-}
-
-.offer-text {
-  color: var(--color-main-text);
-  font-weight: 500;
-}
-
-.book-now-btn {
-  background-color: var(--color-accent-green);
-  color: var(--color-white);
-  padding: 8px 20px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.book-now-btn:hover {
-  background-color: var(--color-button-hover);
+/* Offset page content so it isn't hidden behind the fixed navbar */
+body {
+  padding-top: 72px;
 }
 
 .main-nav {
@@ -224,6 +206,10 @@
 @media (max-width: 768px) {
   .nav-links,
   .nav-right {
+
+  body {
+    padding-top: 64px;
+  }
     display: none;
   }
 

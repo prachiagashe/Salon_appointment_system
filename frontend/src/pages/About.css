@@ -1,0 +1,323 @@
+/* About Us — Silken Atelier */
+.about-page {
+  background-color: var(--color-primary-bg);
+  color: var(--color-main-text);
+  min-height: 100vh;
+}
+
+.about-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 12px;
+}
+
+.about-section-title {
+  font-family: 'Georgia', serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--color-main-text);
+  margin-bottom: 20px;
+}
+
+/* Hero */
+.about-hero {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-image: url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1920&h=800&fit=crop');
+  background-size: cover;
+  background-position: center;
+  padding: 80px 24px;
+}
+
+.about-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(16, 20, 18, 0.72), rgba(20, 30, 24, 0.82));
+  pointer-events: none;
+}
+
+.about-hero-content {
+  position: relative;
+  max-width: 720px;
+}
+
+.about-hero-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 16px;
+}
+
+.about-hero-title {
+  font-family: 'Georgia', serif;
+  font-size: 52px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: #FAF7F2;
+  margin-bottom: 20px;
+}
+
+.about-hero-subtitle {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--color-secondary-text);
+  margin-bottom: 36px;
+}
+
+.about-hero-cta,
+.about-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FAF7F2;
+  color: #141E18;
+  padding: 0.85rem 2rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.about-hero-cta:hover,
+.about-cta-btn:hover {
+  transform: translateY(-1px);
+  background-color: #D4AF37;
+}
+
+/* Story */
+.about-story {
+  padding: 90px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.about-story-img-placeholder {
+  aspect-ratio: 4 / 5;
+  border-radius: 8px;
+  background: linear-gradient(160deg, #243B32, #141E18);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary-text);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.about-story-text p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--color-secondary-text);
+  margin-bottom: 16px;
+}
+
+.about-commitments {
+  list-style: none;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about-commitments li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-secondary-text);
+  padding-left: 20px;
+  position: relative;
+}
+
+.about-commitments li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #D4AF37;
+}
+
+.about-commitments strong {
+  color: var(--color-main-text);
+}
+
+/* Stats */
+.about-stats {
+  background-color: var(--color-secondary-bg);
+  padding: 60px 40px;
+}
+
+.about-stats-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.about-stat-card {
+  background-color: var(--color-primary-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 32px 20px;
+  text-align: center;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.about-stat-card:hover {
+  transform: translateY(-3px);
+  border-color: #D4AF37;
+}
+
+.about-stat-value {
+  display: block;
+  font-family: 'Georgia', serif;
+  font-size: 40px;
+  color: #D4AF37;
+  margin-bottom: 8px;
+}
+
+.about-stat-label {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-secondary-text);
+}
+
+/* Facilities */
+.about-facilities {
+  padding: 90px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.about-facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.about-facility-card {
+  background-color: var(--color-secondary-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 32px 24px;
+  text-align: center;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.about-facility-card:hover {
+  transform: translateY(-3px);
+  border-color: #526B5B;
+}
+
+.about-facility-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background-color: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D4AF37;
+}
+
+.about-facility-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-main-text);
+  margin-bottom: 10px;
+}
+
+.about-facility-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-secondary-text);
+}
+
+/* CTA Banner */
+.about-cta-banner {
+  text-align: center;
+  padding: 80px 24px;
+  background: linear-gradient(135deg, #141E18 0%, #243B32 100%);
+  border-top: 1px solid var(--color-border);
+}
+
+.about-cta-title {
+  font-family: 'Georgia', serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: #FAF7F2;
+  margin-bottom: 12px;
+}
+
+.about-cta-text {
+  font-size: 15px;
+  color: var(--color-secondary-text);
+  margin-bottom: 32px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .about-story-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .about-stats-grid,
+  .about-facilities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-hero-title {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 560px) {
+  .about-stats-grid,
+  .about-facilities-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-story,
+  .about-facilities {
+    padding: 60px 20px;
+  }
+
+  .about-hero-title {
+    font-size: 30px;
+  }
+
+  .about-cta-title {
+    font-size: 28px;
+  }
+}

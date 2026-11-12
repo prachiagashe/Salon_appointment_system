@@ -230,6 +230,13 @@
   color: var(--color-main-text);
 }
 
+.confirmation-sms-note {
+  font-size: 13px;
+  color: var(--color-primary-green);
+  margin-top: 15px;
+  font-style: italic;
+}
+
 .confirmation-actions {
   display: flex;
   gap: 15px;

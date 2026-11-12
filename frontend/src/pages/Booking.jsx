@@ -53,8 +53,10 @@ function Booking() {
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
   const [notes, setNotes] = useState('')
+  const [phone, setPhone] = useState(user?.phone || '')
   const [error, setError] = useState('')
   const [confirmed, setConfirmed] = useState(false)
+  const [smsSentTo, setSmsSentTo] = useState('')
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -63,12 +65,12 @@ function Booking() {
     }
   }, [isAuthenticated, navigate])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
-    if (!service || !staffId || !date || !time) {
-      setError('Please select a service, staff member, date and time.')
+    if (!service || !staffId || !date || !time || !phone.trim()) {
+      setError('Please select a service, staff member, date, time and enter your mobile number.')
       return
     }
 
@@ -77,7 +79,7 @@ function Booking() {
       userId: user.id,
       userName: user.name,
       userEmail: user.email,
-      userPhone: user.phone,
+      userPhone: phone.trim(),
       service,
       staffId: Number(staffId),
       staffName,
@@ -91,6 +93,28 @@ function Booking() {
     const bookings = JSON.parse(localStorage.getItem('salonease_bookings') || '[]')
     bookings.push(booking)
     localStorage.setItem('salonease_bookings', JSON.stringify(bookings))
+
+    // Fire-and-forget POST to backend; SMS is queued server-side via BackgroundTasks
+    try {
+      await fetch('http://localhost:8000/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_name: service,
+          staff_name: staffName,
+          appointment_date: date,
+          appointment_time: time,
+          customer_name: user.name,
+          customer_email: user.email,
+          phone: phone.trim(),
+          notes
+        })
+      })
+      setSmsSentTo(phone.trim())
+    } catch (err) {
+      // Backend unreachable — booking is still saved locally
+      console.warn('Backend booking POST failed:', err)
+    }
 
     setConfirmed(true)
   }
@@ -116,6 +140,11 @@ function Booking() {
               <p><strong>Date:</strong> {date}</p>
               <p><strong>Time:</strong> {time}</p>
             </div>
+            {smsSentTo && (
+              <p className="confirmation-sms-note">
+                A confirmation message has been sent to {smsSentTo}.
+              </p>
+            )}
             <div className="confirmation-actions">
               <Link to="/" className="confirmation-btn secondary">Back to Home</Link>
               <button
@@ -128,6 +157,7 @@ function Booking() {
                   setDate('')
                   setTime('')
                   setNotes('')
+                  setSmsSentTo('')
                 }}
               >
                 Book Another
@@ -235,12 +265,25 @@ function Booking() {
             />
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Contact Information</label>
-            <div className="contact-info">
-              <p><strong>Name:</strong> {user.name}</p>
-              <p><strong>Email:</strong> {user.email}</p>
-              <p><strong>Phone:</strong> {user.phone || 'Not provided'}</p>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">Mobile Number (for confirmation SMS) *</label>
+              <input
+                type="tel"
+                className="form-input"
+                placeholder="e.g. 9876543210"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Contact Information</label>
+              <div className="contact-info">
+                <p><strong>Name:</strong> {user.name}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+              </div>
             </div>
           </div>
 

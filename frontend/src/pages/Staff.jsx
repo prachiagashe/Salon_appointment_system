@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import { useAuth } from '../context/AuthContext'
 import './Staff.css'
 
 const staffData = [
@@ -125,6 +126,7 @@ function Staff() {
   const [selectedSpecialization, setSelectedSpecialization] = useState('All')
   const [showAvailableOnly, setShowAvailableOnly] = useState(false)
   const [selectedStaff, setSelectedStaff] = useState(null)
+  const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
   const filteredStaff = staffData.filter(staff => {
@@ -135,7 +137,12 @@ function Staff() {
   })
 
   const handleBookAppointment = (staffId, staffName) => {
-    navigate(`/booking?staff=${staffId}&staffName=${encodeURIComponent(staffName)}`)
+    const bookingPath = `/booking?staff=${staffId}&staffName=${encodeURIComponent(staffName)}`
+    if (!isAuthenticated) {
+      navigate(`/login?redirect=${encodeURIComponent(bookingPath)}`)
+      return
+    }
+    navigate(bookingPath)
   }
 
   const handleViewProfile = (staff) => {

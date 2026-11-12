@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import ProtectedLink from './ProtectedLink'
 
 function Hero() {
   return (
@@ -11,7 +11,7 @@ function Hero() {
           Our expert stylists combine artistry with premium products to create 
           an experience that transforms not just your hair, but your confidence.
         </p>
-        <Link to="/booking" className="hero-btn">BOOK YOUR EXPERIENCE</Link>
+        <ProtectedLink to="/booking" className="hero-btn">BOOK YOUR EXPERIENCE</ProtectedLink>
       </div>
       <div className="hero-image">
         <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=800&h=1000&fit=crop" alt="Luxurious hair" />

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import { useAuth } from '../context/AuthContext'
 import ServicesHero from '../components/ServicesHero'
 import ServiceCategories from '../components/ServiceCategories'
 import ServicesListing from '../components/ServicesListing'
@@ -10,6 +12,8 @@ function Services() {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchTerm, setSearchTerm] = useState('')
   const [priceRange, setPriceRange] = useState('all')
+  const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
   const [sortBy, setSortBy] = useState('name')
   const [selectedService, setSelectedService] = useState(null)
 
@@ -211,9 +215,12 @@ function Services() {
   const categories = ['All', 'Hair Care', 'Skin Care', 'Nail Care', 'Makeup & Bridal', 'Spa & Wellness']
 
   const handleBookNow = (service) => {
-    // Navigate to booking page with service pre-selected
-    console.log('Booking service:', service.name)
-    // TODO: Implement navigation to booking page
+    const bookingPath = `/booking?service=${encodeURIComponent(service.name)}`
+    if (!isAuthenticated) {
+      navigate(`/login?redirect=${encodeURIComponent(bookingPath)}`)
+      return
+    }
+    navigate(bookingPath)
   }
 
   const handleViewDetails = (service) => {

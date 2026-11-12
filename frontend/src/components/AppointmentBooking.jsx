@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import ProtectedLink from './ProtectedLink'
 
 function AppointmentBooking() {
   const [selectedDate, setSelectedDate] = useState('Today May 24')
@@ -55,7 +55,7 @@ function AppointmentBooking() {
           ))}
         </div>
 
-        <Link to="/booking" className="continue-btn">Continue to Booking</Link>
+        <ProtectedLink to="/booking" className="continue-btn">Continue to Booking</ProtectedLink>
       </div>
     </section>
   )

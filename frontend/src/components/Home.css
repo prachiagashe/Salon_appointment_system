@@ -95,6 +95,9 @@ button {
   flex: 1;
   justify-content: center;
   align-items: center;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 }
 
 .nav-links a {
@@ -106,6 +109,11 @@ button {
 
 .nav-links a:hover {
   color: var(--color-accent-green);
+}
+
+.nav-links a.active {
+  color: var(--color-accent-green);
+  font-weight: 600;
 }
 
 .nav-links a.active {
@@ -146,6 +154,48 @@ button {
 
 .login-link:hover,
 .register-link:hover {
+  color: var(--color-accent-green);
+}
+
+.nav-auth {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.login-link,
+.register-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-secondary-text);
+  transition: color 0.3s ease;
+}
+
+.login-link:hover,
+.register-link:hover {
+  color: var(--color-accent-green);
+}
+
+.nav-user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-main-text);
+}
+
+.logout-link {
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.3s ease;
+  padding: 0;
+}
+
+.logout-link:hover {
   color: var(--color-accent-green);
 }
 
@@ -508,6 +558,10 @@ button {
 
 @media (max-width: 768px) {
   .nav-links {
+    display: none;
+  }
+
+  .nav-auth {
     display: none;
   }
 

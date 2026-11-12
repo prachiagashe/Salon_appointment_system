@@ -1,22 +1,37 @@
-from pydantic import BaseSettings
 from functools import lru_cache
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "mysql+pymysql://root:password@localhost:3306/salonease")
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")
+    # Database components
+    DB_HOST: str = "localhost"
+    DB_PORT: int = 3306
+    DB_USER: str = "root"
+    DB_PASSWORD: str = ""
+    DB_NAME: str = "salonease_db"
+
+    # JWT
+    SECRET_KEY: str = "change-me-in-production"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
-    class Config:
-        env_file = ".env"
+    # CORS
+    FRONTEND_URL: str = "http://localhost:5173"
 
-@lru_cache()
-def get_settings():
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+
+    @property
+    def DATABASE_URL(self) -> str:
+        return (
+            f"mysql+pymysql://{self.DB_USER}:{self.DB_PASSWORD}"
+            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        )
+
+
+@lru_cache
+def get_settings() -> Settings:
     return Settings()
+
 
 settings = get_settings()

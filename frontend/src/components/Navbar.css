@@ -1,0 +1,237 @@
+/* Navbar Styles — Silken Atelier */
+.navbar {
+  width: 100%;
+  background-color: var(--color-secondary-bg);
+}
+
+.top-bar {
+  background-color: var(--color-primary-green);
+  padding: 10px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.offer-text {
+  color: var(--color-main-text);
+  font-weight: 500;
+}
+
+.book-now-btn {
+  background-color: var(--color-accent-green);
+  color: var(--color-white);
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.book-now-btn:hover {
+  background-color: var(--color-button-hover);
+}
+
+.main-nav {
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  gap: 20px;
+}
+
+.nav-logo {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--color-main-text);
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--color-secondary-text);
+}
+
+.nav-links a:hover {
+  color: var(--color-accent-green);
+}
+
+.nav-links a.active {
+  color: var(--color-accent-green);
+  font-weight: 600;
+}
+
+/* Right-side cluster: auth links + CTA */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-shrink: 0;
+}
+
+.nav-auth {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.login-link,
+.register-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-secondary-text);
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+.login-link:hover,
+.register-link:hover {
+  color: var(--color-accent-green);
+}
+
+.nav-user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-main-text);
+  white-space: nowrap;
+}
+
+.logout-link {
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-secondary-text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.3s ease;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.logout-link:hover {
+  color: var(--color-accent-green);
+}
+
+/* BOOK APPOINTMENT CTA */
+.book-appointment-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  white-space: nowrap;
+  flex-shrink: 0;
+  background-color: #FAF7F2;
+  color: #141E18;
+  border: 1px solid #FAF7F2;
+  padding: 0.65rem 1.35rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.book-appointment-btn:hover {
+  transform: translateY(-1px);
+  background-color: #D4AF37;
+  border-color: #D4AF37;
+  color: #141E18;
+}
+
+/* Hamburger (mobile only) */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.nav-hamburger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: var(--color-main-text);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.nav-hamburger.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.nav-hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-hamburger.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile menu */
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  background-color: var(--color-secondary-bg);
+  border-bottom: 1px solid var(--color-border);
+  padding: 10px 20px 20px;
+  gap: 15px;
+}
+
+.mobile-menu.open {
+  display: flex;
+}
+
+.mobile-menu a,
+.mobile-menu .logout-link {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--color-secondary-text);
+  padding: 8px 0;
+}
+
+.mobile-menu a:hover,
+.mobile-menu .logout-link:hover {
+  color: var(--color-accent-green);
+}
+
+.mobile-menu .book-appointment-btn {
+  margin-top: 8px;
+  align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+  .nav-links,
+  .nav-right {
+    display: none;
+  }
+
+  .nav-hamburger {
+    display: flex;
+  }
+
+  .main-nav {
+    padding: 15px 20px;
+  }
+}

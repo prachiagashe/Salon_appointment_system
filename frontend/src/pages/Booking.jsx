@@ -60,7 +60,7 @@ function Booking() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      const currentPath = `/booking${window.location.search}`
+      const currentPath = `/book${window.location.search}`
       navigate(`/login?redirect=${encodeURIComponent(currentPath)}`, { replace: true })
     }
   }, [isAuthenticated, navigate])

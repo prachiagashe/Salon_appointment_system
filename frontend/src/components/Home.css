@@ -557,28 +557,6 @@ button {
 }
 
 @media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-
-  .nav-auth {
-    display: none;
-  }
-
-  .nav-auth {
-    display: none;
-  }
-  
-  .main-nav {
-    padding: 15px 20px;
-  }
-  
-  .top-bar {
-    padding: 10px 20px;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
   .hero-title {
     font-size: 32px;
   }

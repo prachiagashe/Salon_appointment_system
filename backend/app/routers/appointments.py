@@ -1,7 +1,7 @@
 import logging
-from typing import Optional
+from typing import List, Optional
 
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_current_user
@@ -74,4 +74,58 @@ def create_appointment(
         booking_data.appointment_time,
     )
 
+    return appointment
+
+
+@router.get("/my", response_model=List[AppointmentOut])
+def get_my_appointments(
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user),
+):
+    """Return the authenticated user's appointments, newest first."""
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required.",
+        )
+    return (
+        db.query(Appointment)
+        .filter(Appointment.user_id == current_user.id)
+        .order_by(Appointment.appointment_date.desc(), Appointment.appointment_time.desc())
+        .all()
+    )
+
+
+@router.put("/{appointment_id}/cancel", response_model=AppointmentOut)
+def cancel_appointment(
+    appointment_id: int,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user),
+):
+    """Cancel an upcoming appointment owned by the current user."""
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required.",
+        )
+
+    appointment = (
+        db.query(Appointment)
+        .filter(Appointment.id == appointment_id, Appointment.user_id == current_user.id)
+        .first()
+    )
+    if not appointment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointment not found.",
+        )
+    if appointment.status not in ("Confirmed", "Pending"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot cancel an appointment with status '{appointment.status}'.",
+        )
+
+    appointment.status = "Cancelled"
+    db.commit()
+    db.refresh(appointment)
     return appointment

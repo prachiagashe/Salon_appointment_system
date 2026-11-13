@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect, useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import ProtectedLink from './ProtectedLink'
 import { useAuth } from '../context/AuthContext'
 import './Navbar.css'
@@ -7,8 +7,31 @@ import './Navbar.css'
 function Navbar({ activePage }) {
   const { user, isAuthenticated, logout } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null)
+  const navigate = useNavigate()
 
   const closeMenu = () => setMenuOpen(false)
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleLogout = () => {
+    logout()
+    setDropdownOpen(false)
+    setMenuOpen(false)
+    navigate('/login')
+  }
+
+  const initial = user?.name ? user.name.trim().charAt(0).toUpperCase() : 'U'
 
   return (
     <nav className="navbar">
@@ -22,19 +45,50 @@ function Navbar({ activePage }) {
           <Link to="/contact" className={activePage === 'contact' ? 'active' : ''}>CONTACT</Link>
         </div>
         <div className="nav-right">
-          <div className="nav-auth">
-            {isAuthenticated ? (
-              <>
-                <span className="nav-user-name">Hi, {user.name.split(' ')[0]}</span>
-                <button className="logout-link" onClick={logout}>LOGOUT</button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="login-link">LOGIN</Link>
-                <Link to="/register" className="register-link">REGISTER</Link>
-              </>
-            )}
-          </div>
+          {isAuthenticated ? (
+            <div className="nav-avatar-wrap" ref={dropdownRef}>
+              <button
+                className={`nav-avatar${dropdownOpen ? ' open' : ''}`}
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                aria-label="Account menu"
+                aria-expanded={dropdownOpen}
+              >
+                {initial}
+              </button>
+              {dropdownOpen && (
+                <div className="nav-dropdown">
+                  <div className="nav-dropdown-header">
+                    <span className="nav-dropdown-name">{user.name}</span>
+                    <span className="nav-dropdown-email">{user.email}</span>
+                  </div>
+                  <div className="nav-dropdown-divider"></div>
+                  <Link
+                    to="/profile"
+                    className="nav-dropdown-item"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    My Profile
+                  </Link>
+                  <Link
+                    to="/my-appointments"
+                    className="nav-dropdown-item"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Booked Appointments
+                  </Link>
+                  <div className="nav-dropdown-divider"></div>
+                  <button className="nav-dropdown-item logout" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="nav-auth">
+              <Link to="/login" className="login-link">LOGIN</Link>
+              <Link to="/register" className="register-link">REGISTER</Link>
+            </div>
+          )}
           <ProtectedLink to="/book" className="book-appointment-btn">BOOK APPOINTMENT</ProtectedLink>
         </div>
         <button
@@ -55,8 +109,9 @@ function Navbar({ activePage }) {
         <Link to="/contact" onClick={closeMenu}>CONTACT</Link>
         {isAuthenticated ? (
           <>
-            <span className="nav-user-name">Hi, {user.name.split(' ')[0]}</span>
-            <button className="logout-link" onClick={() => { logout(); closeMenu() }}>LOGOUT</button>
+            <Link to="/profile" onClick={closeMenu}>MY PROFILE</Link>
+            <Link to="/my-appointments" onClick={closeMenu}>BOOKED APPOINTMENTS</Link>
+            <button className="logout-link" onClick={handleLogout}>LOGOUT</button>
           </>
         ) : (
           <>

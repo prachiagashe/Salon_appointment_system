@@ -137,7 +137,7 @@ function Staff() {
   })
 
   const handleBookAppointment = (staffId, staffName) => {
-    const bookingPath = `/booking?staff=${staffId}&staffName=${encodeURIComponent(staffName)}`
+    const bookingPath = `/book?staffId=${staffId}&staffName=${encodeURIComponent(staffName)}`
     if (!isAuthenticated) {
       navigate(`/login?redirect=${encodeURIComponent(bookingPath)}`)
       return
@@ -258,7 +258,7 @@ function Staff() {
                         className="book-appointment-btn"
                         onClick={() => handleBookAppointment(staff.id, staff.name)}
                       >
-                        Book Appointment
+                        Book with Stylist
                       </button>
                     </div>
                   </div>

@@ -27,7 +27,7 @@ class AppointmentOut(BaseModel):
     appointment_time: str
     notes: Optional[str] = None
     status: str
-    created_at: Optional[str] = None
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

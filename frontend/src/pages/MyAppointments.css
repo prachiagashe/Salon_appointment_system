@@ -1,0 +1,312 @@
+/* My Appointments — Silken Atelier */
+.myappt-page {
+  background-color: var(--color-primary-bg);
+  color: var(--color-main-text);
+  min-height: 100vh;
+}
+
+.myappt-header {
+  position: relative;
+  padding: 60px 40px;
+  text-align: center;
+  background-image: url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1920&h=500&fit=crop');
+  background-size: cover;
+  background-position: center;
+}
+
+.myappt-header-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(16, 20, 18, 0.7), rgba(20, 30, 24, 0.8));
+}
+
+.myappt-header-content {
+  position: relative;
+  z-index: 1;
+}
+
+.myappt-header-title {
+  font-family: 'Georgia', serif;
+  font-size: 42px;
+  font-weight: 400;
+  color: #FAF7F2;
+  margin-bottom: 8px;
+}
+
+.myappt-header-subtitle {
+  font-size: 15px;
+  color: var(--color-secondary-text);
+}
+
+/* Toast */
+.myappt-toast {
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #2E4A3E;
+  color: #FAF7F2;
+  padding: 14px 20px;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  animation: toast-in 0.25s ease;
+}
+
+.myappt-toast svg {
+  color: #D4AF37;
+  flex-shrink: 0;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Body */
+.myappt-body {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 50px 40px 80px;
+}
+
+.myappt-section {
+  margin-bottom: 50px;
+}
+
+.myappt-section-title {
+  font-family: 'Georgia', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--color-main-text);
+  margin-bottom: 22px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.myappt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Card */
+.myappt-card {
+  background-color: var(--color-secondary-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 22px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.myappt-card:hover {
+  transform: translateY(-2px);
+  border-color: #7A9B8E;
+}
+
+.myappt-card-top {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.myappt-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D4AF37;
+  flex-shrink: 0;
+}
+
+.myappt-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.myappt-service {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-main-text);
+  margin-bottom: 2px;
+}
+
+.myappt-stylist {
+  font-size: 13px;
+  color: var(--color-secondary-text);
+}
+
+.myappt-status {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: 20px;
+}
+
+.status-confirmed {
+  background-color: rgba(46, 74, 62, 0.12);
+  color: #2E4A3E;
+  border: 1px solid rgba(46, 74, 62, 0.3);
+}
+
+.status-pending {
+  background-color: rgba(212, 175, 55, 0.15);
+  color: #8a6d1f;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.status-completed {
+  background-color: rgba(122, 155, 142, 0.15);
+  color: #4a6b5c;
+  border: 1px solid rgba(122, 155, 142, 0.4);
+}
+
+.status-cancelled {
+  background-color: rgba(139, 0, 0, 0.1);
+  color: #8B0000;
+  border: 1px solid rgba(139, 0, 0, 0.3);
+}
+
+.myappt-details {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 12px;
+}
+
+.myappt-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--color-secondary-text);
+}
+
+.myappt-detail svg {
+  color: #7A9B8E;
+}
+
+.myappt-notes {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-secondary-text);
+  margin-bottom: 12px;
+}
+
+.myappt-cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid rgba(139, 0, 0, 0.4);
+  color: #8B0000;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.2s ease;
+}
+
+.myappt-cancel-btn:hover:not(:disabled) {
+  background-color: rgba(139, 0, 0, 0.08);
+}
+
+.myappt-cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.myappt-spinner {
+  animation: myappt-spin 1s linear infinite;
+}
+
+@keyframes myappt-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* States */
+.myappt-state {
+  background-color: var(--color-secondary-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 60px 30px;
+  text-align: center;
+  color: var(--color-secondary-text);
+}
+
+.myappt-state h3 {
+  font-family: 'Georgia', serif;
+  font-size: 24px;
+  color: var(--color-main-text);
+  margin: 16px 0 8px;
+}
+
+.myappt-state svg {
+  color: #D4AF37;
+}
+
+.myappt-retry,
+.myappt-book-btn {
+  display: inline-block;
+  margin-top: 18px;
+  background-color: #2E4A3E;
+  color: #FAF7F2;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.2s ease;
+}
+
+.myappt-retry:hover,
+.myappt-book-btn:hover {
+  background-color: #D4AF37;
+  color: #141E18;
+}
+
+.myappt-none {
+  font-size: 14px;
+  color: var(--color-secondary-text);
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .myappt-header {
+    padding: 45px 20px;
+  }
+
+  .myappt-header-title {
+    font-size: 30px;
+  }
+
+  .myappt-body {
+    padding: 35px 20px 60px;
+  }
+
+  .myappt-grid {
+    grid-template-columns: 1fr;
+  }
+}

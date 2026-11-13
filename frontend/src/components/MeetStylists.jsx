@@ -30,7 +30,7 @@ function MeetStylists() {
     <section className="meet-stylists">
       <div className="stylists-header">
         <h2 className="stylists-title">MEET OUR STYLISTS</h2>
-        <Link to="/stylists" className="view-all-link">VIEW ALL</Link>
+        <Link to="/staff" className="view-all-link">VIEW ALL</Link>
       </div>
       
       <div className="stylists-grid">

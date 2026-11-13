@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 SALON_NAME = "Silken Atelier"
 
+# Dev/test fallback: when Twilio credentials are not configured, confirmation
+# messages are logged as if sent to this number instead of being skipped.
+DEV_FALLBACK_PHONE = "+919356855036"
+
 
 def format_phone_number(phone: Optional[str]) -> Optional[str]:
     """Normalize a phone number to E.164-ish format.

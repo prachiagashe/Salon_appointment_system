@@ -5,7 +5,7 @@ function BeyondBeauty() {
   return (
     <section className="beyond-beauty">
       <div className="beyond-image">
-        <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=1000&fit=crop" alt="Delicate flowers" />
+        <img src="https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=800&h=1000&fit=crop" alt="Luxury spa skincare ritual" />
       </div>
       <div className="beyond-content">
         <h2 className="beyond-title">BEYOND BEAUTY</h2>

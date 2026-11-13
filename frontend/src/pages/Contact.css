@@ -220,8 +220,8 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  background-color: #FAF7F2;
-  color: #141E18;
+  background-color: #2E4A3E;
+  color: #FAF7F2;
   border: none;
   padding: 14px 24px;
   border-radius: 4px;
@@ -236,6 +236,7 @@
 .contact-submit-btn:hover:not(:disabled) {
   transform: translateY(-1px);
   background-color: #D4AF37;
+  color: #141E18;
 }
 
 .contact-submit-btn:disabled {

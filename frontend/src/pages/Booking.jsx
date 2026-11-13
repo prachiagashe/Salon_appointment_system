@@ -48,7 +48,7 @@ function Booking() {
   const [searchParams] = useSearchParams()
 
   const [service, setService] = useState(searchParams.get('service') || '')
-  const [staffId, setStaffId] = useState(searchParams.get('staff') || '')
+  const [staffId, setStaffId] = useState(searchParams.get('staffId') || searchParams.get('staff') || '')
   const [staffName, setStaffName] = useState(searchParams.get('staffName') || '')
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
@@ -149,6 +149,7 @@ function Booking() {
               </p>
             )}
             <div className="confirmation-actions">
+              <Link to="/profile" className="confirmation-btn secondary">View in My Profile</Link>
               <Link to="/" className="confirmation-btn secondary">Back to Home</Link>
               <button
                 className="confirmation-btn primary"

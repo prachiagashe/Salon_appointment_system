@@ -1,15 +1,15 @@
 /* Color Variables - Premium Black and Green Theme */
 :root {
-  --color-primary-bg: #101412;
-  --color-secondary-bg: #171E19;
-  --color-primary-green: #243B32;
-  --color-accent-green: #526B5B;
-  --color-light-bg: #F3F5F1;
+  --color-primary-bg: #FAF7F2;
+  --color-secondary-bg: #FFFFFF;
+  --color-primary-green: #2E4A3E;
+  --color-accent-green: #7A9B8E;
+  --color-light-bg: #F3EFE7;
   --color-white: #FFFFFF;
-  --color-main-text: #F5F5F5;
-  --color-secondary-text: #A8B2AA;
-  --color-border: #303B33;
-  --color-button-hover: #354F41;
+  --color-main-text: #1E2A24;
+  --color-secondary-text: #5C6B63;
+  --color-border: #E4DCCB;
+  --color-button-hover: #3D5C4C;
 }
 
 /* Global Styles */
@@ -199,67 +199,286 @@ button {
   color: var(--color-accent-green);
 }
 
-/* Hero Section */
+/* Hero Section — video background */
 .hero {
+  position: relative;
+  min-height: 92vh;
   display: flex;
-  min-height: 80vh;
-  background-color: var(--color-secondary-bg);
-}
-
-.hero-content {
-  flex: 1;
-  padding: 80px 60px;
-  display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  overflow: hidden;
   background-color: var(--color-primary-bg);
 }
 
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, rgba(16, 20, 18, 0.88) 0%, rgba(20, 30, 24, 0.65) 55%, rgba(16, 20, 18, 0.45) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  padding: 100px 40px 80px;
+  text-align: center;
+}
+
+.hero-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 20px;
+}
+
 .hero-title {
-  font-size: 56px;
+  font-size: 60px;
   font-weight: 300;
-  line-height: 1.2;
-  color: var(--color-main-text);
-  margin-bottom: 30px;
+  line-height: 1.15;
+  color: #FAF7F2;
+  margin-bottom: 26px;
   font-family: 'Georgia', serif;
 }
 
 .hero-description {
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.8;
   color: var(--color-secondary-text);
   margin-bottom: 40px;
   max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .hero-btn {
-  background-color: var(--color-primary-green);
-  color: var(--color-white);
-  padding: 18px 40px;
+  background-color: #FAF7F2;
+  color: #141E18;
+  padding: 16px 36px;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 1px;
-  align-self: flex-start;
+  letter-spacing: 0.08em;
+  display: inline-block;
+  transition: transform 0.25s ease, background-color 0.25s ease;
 }
 
 .hero-btn:hover {
-  background-color: var(--color-button-hover);
-  color: var(--color-white);
+  transform: translateY(-2px);
+  background-color: #D4AF37;
+  color: #141E18;
 }
 
-.hero-image {
-  flex: 1;
+.hero-btn-secondary {
+  background-color: transparent;
+  color: #FAF7F2;
+  padding: 16px 36px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  border: 1px solid rgba(250, 247, 242, 0.5);
+  display: inline-block;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.hero-btn-secondary:hover {
+  border-color: #FAF7F2;
+  background-color: rgba(250, 247, 242, 0.08);
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background-color: var(--color-secondary-bg);
+  gap: 10px;
 }
 
-.hero-image img {
+.hero-scroll span {
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-secondary-text);
+}
+
+.hero-scroll-line {
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(to bottom, #D4AF37, transparent);
+  animation: scroll-pulse 2s ease-in-out infinite;
+}
+
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.4; transform: scaleY(0.8); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* Stats Strip */
+.home-stats {
+  background-color: var(--color-secondary-bg);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: 50px 40px;
+}
+
+.home-stats-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  text-align: center;
+}
+
+.home-stat-value {
+  display: block;
+  font-family: 'Georgia', serif;
+  font-size: 38px;
+  color: #D4AF37;
+  margin-bottom: 6px;
+}
+
+.home-stat-label {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-secondary-text);
+}
+
+/* Signature Services */
+.home-services {
+  padding: 90px 40px;
+  background-color: var(--color-primary-bg);
+}
+
+.home-services-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.home-services-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 12px;
+}
+
+.home-services-title {
+  font-family: 'Georgia', serif;
+  font-size: 40px;
+  font-weight: 400;
+  color: var(--color-main-text);
+  margin-bottom: 14px;
+}
+
+.home-services-subtitle {
+  font-size: 15px;
+  color: var(--color-secondary-text);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.home-services-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.home-service-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background-color: var(--color-secondary-bg);
+  border: 1px solid var(--color-border);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.home-service-card:hover {
+  transform: translateY(-5px);
+  border-color: #526B5B;
+}
+
+.home-service-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.home-service-card:hover img {
+  transform: scale(1.05);
+}
+
+.home-service-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(16, 20, 18, 0.92) 0%, rgba(16, 20, 18, 0.2) 55%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+}
+
+.home-service-name {
+  font-family: 'Georgia', serif;
+  font-size: 20px;
+  color: #FAF7F2;
+  margin-bottom: 4px;
+}
+
+.home-service-price {
+  font-size: 13px;
+  color: #D4AF37;
+  letter-spacing: 0.05em;
+}
+
+.home-services-cta {
+  text-align: center;
+  margin-top: 45px;
+}
+
+.home-services-cta a {
+  display: inline-block;
+  border: 1px solid #D4AF37;
+  color: #D4AF37;
+  padding: 14px 38px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.home-services-cta a:hover {
+  background-color: #D4AF37;
+  color: #141E18;
 }
 
 /* Appointment Booking Section */
@@ -535,48 +754,88 @@ button {
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .hero {
-    flex-direction: column;
-  }
-  
-  .hero-content {
-    padding: 60px 40px;
-  }
-  
   .hero-title {
-    font-size: 42px;
+    font-size: 48px;
   }
-  
+
+  .home-services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .beyond-beauty {
     flex-direction: column;
   }
-  
+
   .beyond-content {
     padding: 60px 40px;
   }
 }
 
 @media (max-width: 768px) {
-  .hero-title {
-    font-size: 32px;
+  .hero {
+    min-height: 85vh;
   }
-  
+
+  .hero-content {
+    padding: 90px 24px 70px;
+  }
+
+  .hero-title {
+    font-size: 36px;
+  }
+
   .hero-description {
     font-size: 16px;
   }
-  
+
+  .home-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 35px;
+  }
+
+  .home-services {
+    padding: 60px 20px;
+  }
+
+  .home-services-title {
+    font-size: 30px;
+  }
+
+  .home-services-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
   .date-selector,
   .time-selector {
     flex-wrap: wrap;
   }
-  
+
   .stylists-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .booking-title,
   .stylists-title,
   .beyond-title {
     font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-btn,
+  .hero-btn-secondary {
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
   }
 }

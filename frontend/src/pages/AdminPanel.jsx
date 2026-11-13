@@ -1,24 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import Navbar from '../components/Navbar'
 import { useAuth } from '../context/AuthContext'
+import { useAdminShell } from '../components/layouts/AdminLayout'
 import {
-  LayoutDashboard, CalendarDays, Users, Sparkles, Scissors, Mail,
-  Loader2, CheckCircle, XCircle, Trash2, Plus, Pencil, Ban, ShieldCheck
+  CheckCircle, XCircle, Trash2, Plus, Pencil, Ban, ShieldCheck, Loader2
 } from 'lucide-react'
 import './AdminPanel.css'
 
 const API_BASE = 'http://localhost:8000'
-
-const TABS = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'appointments', label: 'Appointments', icon: CalendarDays },
-  { id: 'users', label: 'Users', icon: Users },
-  { id: 'services', label: 'Services', icon: Sparkles },
-  { id: 'staff', label: 'Staff', icon: Scissors },
-  { id: 'inquiries', label: 'Inquiries', icon: Mail }
-]
 
 const STATUS_STYLES = {
   Confirmed: 'status-confirmed',
@@ -27,13 +17,13 @@ const STATUS_STYLES = {
   Cancelled: 'status-cancelled'
 }
 
-const EMPTY_SERVICE = { name: '', category: 'General', description: '', price: '', duration: '', image: '' }
+const EMPTY_SERVICE = { name: '', category: 'General', description: '', price: '', duration_minutes: '', image_url: '', is_active: true }
 const EMPTY_STAFF = { name: '', title: '', specialization: '', bio: '', image: '', availability: 'Available' }
 
 function AdminPanel() {
   const { user, token, isAuthenticated, logout } = useAuth()
+  const { tab, setTab, setBadges } = useAdminShell()
   const navigate = useNavigate()
-  const [tab, setTab] = useState('dashboard')
   const [stats, setStats] = useState(null)
   const [appointments, setAppointments] = useState([])
   const [users, setUsers] = useState([])
@@ -79,7 +69,7 @@ function AdminPanel() {
         axios.get(`${API_BASE}/api/admin/stats`, { headers }),
         axios.get(`${API_BASE}/api/admin/appointments`, { headers }),
         axios.get(`${API_BASE}/api/admin/users`, { headers }),
-        axios.get(`${API_BASE}/api/admin/services`, { headers }),
+        axios.get(`${API_BASE}/api/services?include_inactive=true`, { headers }),
         axios.get(`${API_BASE}/api/admin/staff`, { headers }),
         axios.get(`${API_BASE}/api/contact`, { headers })
       ])
@@ -89,6 +79,10 @@ function AdminPanel() {
       setServices(sv.data)
       setStaff(st.data)
       setInquiries(iq.data)
+      setBadges({
+        appointments: a.data.filter((x) => x.status === 'Pending').length,
+        inquiries: iq.data.length
+      })
     } catch (err) {
       if (!handle401(err)) setError('Failed to load admin data.')
     } finally {
@@ -126,24 +120,38 @@ function AdminPanel() {
 
   const saveService = async () => {
     try {
-      const payload = { ...serviceForm, price: serviceForm.price === '' ? null : Number(serviceForm.price) }
+      const payload = {
+        ...serviceForm,
+        price: serviceForm.price === '' ? null : Number(serviceForm.price),
+        duration_minutes: serviceForm.duration_minutes === '' ? null : Number(serviceForm.duration_minutes)
+      }
       if (serviceForm.id) {
-        await axios.put(`${API_BASE}/api/admin/services/${serviceForm.id}`, payload, { headers })
+        await axios.put(`${API_BASE}/api/services/${serviceForm.id}`, payload, { headers })
       } else {
-        await axios.post(`${API_BASE}/api/admin/services`, payload, { headers })
+        await axios.post(`${API_BASE}/api/services`, payload, { headers })
       }
       setServiceForm(null)
-      showToast('Service saved.')
+      showToast('Service updated successfully.')
       fetchAll()
     } catch (err) {
-      if (!handle401(err)) showToast('Failed to save service.')
+      if (!handle401(err)) showToast(err.response?.data?.detail || 'Failed to save service.')
+    }
+  }
+
+  const toggleServiceActive = async (s) => {
+    try {
+      await axios.put(`${API_BASE}/api/services/${s.id}`, { is_active: !s.is_active }, { headers })
+      showToast(`Service ${s.is_active ? 'deactivated' : 'activated'}.`)
+      fetchAll()
+    } catch (err) {
+      if (!handle401(err)) showToast('Failed to update service.')
     }
   }
 
   const deleteService = async (id) => {
-    if (!window.confirm('Delete this service?')) return
+    if (!window.confirm('Delete this service permanently?')) return
     try {
-      await axios.delete(`${API_BASE}/api/admin/services/${id}`, { headers })
+      await axios.delete(`${API_BASE}/api/services/${id}`, { headers })
       showToast('Service deleted.')
       fetchAll()
     } catch (err) {
@@ -181,26 +189,9 @@ function AdminPanel() {
 
   return (
     <div className="admin-page">
-      <Navbar activePage="" />
       {toast && <div className="admin-toast"><CheckCircle size={18} /><span>{toast}</span></div>}
 
       <div className="admin-layout">
-        <aside className="admin-sidebar">
-          <h2 className="admin-sidebar-title">Admin Panel</h2>
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              className={`admin-tab${tab === t.id ? ' active' : ''}`}
-              onClick={() => setTab(t.id)}
-            >
-              <t.icon size={17} /> {t.label}
-            </button>
-          ))}
-          <button className="admin-tab back" onClick={() => navigate('/')}>
-            ← Back to Site
-          </button>
-        </aside>
-
         <main className="admin-main">
           {loading ? (
             <div className="admin-state"><Loader2 size={32} className="admin-spinner" /><p>Loading...</p></div>
@@ -314,8 +305,16 @@ function AdminPanel() {
                         <input placeholder="Name *" value={serviceForm.name} onChange={(e) => setServiceForm({ ...serviceForm, name: e.target.value })} />
                         <input placeholder="Category" value={serviceForm.category} onChange={(e) => setServiceForm({ ...serviceForm, category: e.target.value })} />
                         <input placeholder="Price (₹)" type="number" value={serviceForm.price} onChange={(e) => setServiceForm({ ...serviceForm, price: e.target.value })} />
-                        <input placeholder="Duration (e.g. 60 min)" value={serviceForm.duration} onChange={(e) => setServiceForm({ ...serviceForm, duration: e.target.value })} />
-                        <input placeholder="Image URL" value={serviceForm.image} onChange={(e) => setServiceForm({ ...serviceForm, image: e.target.value })} className="admin-form-wide" />
+                        <input placeholder="Duration (minutes)" type="number" value={serviceForm.duration_minutes} onChange={(e) => setServiceForm({ ...serviceForm, duration_minutes: e.target.value })} />
+                        <input placeholder="Image URL" value={serviceForm.image_url} onChange={(e) => setServiceForm({ ...serviceForm, image_url: e.target.value })} className="admin-form-wide" />
+                        <label className="admin-form-wide admin-active-toggle">
+                          <input
+                            type="checkbox"
+                            checked={!!serviceForm.is_active}
+                            onChange={(e) => setServiceForm({ ...serviceForm, is_active: e.target.checked })}
+                          />
+                          Active (visible to customers)
+                        </label>
                         <textarea placeholder="Description" value={serviceForm.description} onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })} className="admin-form-wide" />
                       </div>
                       <div className="admin-form-actions">
@@ -326,12 +325,13 @@ function AdminPanel() {
                   )}
                   <div className="admin-cards-grid">
                     {services.map((s) => (
-                      <div key={s.id} className="admin-item-card">
-                        <h3>{s.name}</h3>
-                        <p className="admin-item-meta">{s.category} {s.price != null && `• ₹${s.price}`} {s.duration && `• ${s.duration}`}</p>
+                      <div key={s.id} className={`admin-item-card${!s.is_active ? ' inactive' : ''}`}>
+                        <h3>{s.name} {!s.is_active && <span className="admin-badge status-cancelled">Inactive</span>}</h3>
+                        <p className="admin-item-meta">{s.category} {s.price != null && `• ₹${s.price}`} {s.duration_minutes != null && `• ${s.duration_minutes} min`}</p>
                         {s.description && <p className="admin-item-desc">{s.description}</p>}
                         <div className="admin-item-actions">
-                          <button className="admin-mini-btn" onClick={() => setServiceForm({ ...s })}><Pencil size={13} /> Edit</button>
+                          <button className="admin-mini-btn" onClick={() => setServiceForm({ ...s, price: s.price ?? '', duration_minutes: s.duration_minutes ?? '' })}><Pencil size={13} /> Edit</button>
+                          <button className="admin-mini-btn" onClick={() => toggleServiceActive(s)}>{s.is_active ? 'Deactivate' : 'Activate'}</button>
                           <button className="admin-mini-btn cancel" onClick={() => deleteService(s.id)}><Trash2 size={13} /> Delete</button>
                         </div>
                       </div>

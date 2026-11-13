@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.security import hash_password
 from app.database import Base, SessionLocal, engine
 from app.models.user import User
-from app.routers import admin, appointments, auth, contact
+from app.models.service import Service
+from app.routers import admin, appointments, auth, contact, services
 
 # Import models so SQLAlchemy metadata is fully registered
 from app.models import appointment as _appointment  # noqa: F401
@@ -20,6 +22,69 @@ Base.metadata.create_all(bind=engine)
 
 ADMIN_EMAIL = "admin@gmail.com"
 ADMIN_PASSWORD = "12345678"
+
+DEFAULT_SERVICES = [
+    {
+        "name": "Signature Haircut",
+        "category": "Hair Care",
+        "description": "Precision cut and styling tailored to your face shape, finished with a wash and blow-dry.",
+        "price": 50.00,
+        "duration_minutes": 45,
+        "image_url": "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop",
+    },
+    {
+        "name": "Hair Coloring",
+        "category": "Hair Care",
+        "description": "Premium hair coloring using high-quality products for vibrant, long-lasting results.",
+        "price": 120.00,
+        "duration_minutes": 120,
+        "image_url": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=400&fit=crop",
+    },
+    {
+        "name": "Bridal Styling",
+        "category": "Makeup & Bridal",
+        "description": "Complete bridal package including consultation, trial, and day-of hair and makeup.",
+        "price": 250.00,
+        "duration_minutes": 150,
+        "image_url": "https://images.unsplash.com/photo-1457972729786-0411a7b2b426?w=600&h=400&fit=crop",
+    },
+    {
+        "name": "Hydrating Facial",
+        "category": "Skin Care",
+        "description": "Deep cleansing and hydrating facial to refresh and rejuvenate your skin.",
+        "price": 60.00,
+        "duration_minutes": 45,
+        "image_url": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=400&fit=crop",
+    },
+    {
+        "name": "Manicure & Pedicure",
+        "category": "Nail Care",
+        "description": "Complete nail care for hands and feet including shaping, cuticle care, and polish.",
+        "price": 80.00,
+        "duration_minutes": 90,
+        "image_url": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=400&fit=crop",
+    },
+]
+
+
+def migrate_services_table(db: Session) -> None:
+    """Rename legacy service columns to the new schema if they still exist."""
+    cols = {row[0] for row in db.execute(text("SHOW COLUMNS FROM services"))}
+    if "duration" in cols and "duration_minutes" not in cols:
+        db.execute(text("ALTER TABLE services CHANGE duration duration_minutes INT NULL"))
+    if "image" in cols and "image_url" not in cols:
+        db.execute(text("ALTER TABLE services CHANGE image image_url VARCHAR(500) NULL"))
+    if "updated_at" not in cols:
+        db.execute(text("ALTER TABLE services ADD COLUMN updated_at DATETIME NULL"))
+    db.commit()
+
+
+def seed_services(db: Session) -> None:
+    """Seed default salon services when the table is empty."""
+    if db.query(Service).count() == 0:
+        for s in DEFAULT_SERVICES:
+            db.add(Service(**s, is_active=True))
+        db.commit()
 
 
 def enforce_roles(db: Session) -> None:
@@ -57,6 +122,8 @@ app = FastAPI(title="SalonEase API", version="1.0.0")
 def on_startup() -> None:
     db = SessionLocal()
     try:
+        migrate_services_table(db)
+        seed_services(db)
         enforce_roles(db)
     finally:
         db.close()
@@ -65,6 +132,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 app.include_router(appointments.router, prefix="/api/appointments", tags=["appointments"])
 app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
+app.include_router(services.router, prefix="/api/services", tags=["services"])
 
 # CORS Configuration
 app.add_middleware(

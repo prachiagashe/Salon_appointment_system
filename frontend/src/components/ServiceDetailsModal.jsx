@@ -33,14 +33,16 @@ function ServiceDetailsModal({ service, onClose, onBookNow }) {
               <p>{service.fullDescription}</p>
             </div>
 
-            <div className="modal-benefits">
-              <h3>Benefits</h3>
-              <ul>
-                {service.benefits.map((benefit, index) => (
-                  <li key={index}>{benefit}</li>
-                ))}
-              </ul>
-            </div>
+            {(service.benefits || []).length > 0 && (
+              <div className="modal-benefits">
+                <h3>Benefits</h3>
+                <ul>
+                  {service.benefits.map((benefit, index) => (
+                    <li key={index}>{benefit}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="modal-staff">
               <h3>Available Staff</h3>

@@ -364,6 +364,17 @@
   line-height: 1.6;
 }
 
+.admin-item-card.inactive { opacity: 0.55; }
+
+.admin-active-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-main-text);
+  cursor: pointer;
+}
+
 /* States */
 .admin-state {
   background-color: var(--color-secondary-bg);

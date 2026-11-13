@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
 import AppointmentBooking from '../components/AppointmentBooking'
@@ -14,30 +15,26 @@ const stats = [
   { value: '100%', label: 'Premium Products' }
 ]
 
-const signatureServices = [
-  {
-    name: 'Bridal Makeup',
-    price: 'From $250',
-    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=800&fit=crop'
-  },
-  {
-    name: 'Balayage',
-    price: 'From $180',
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=800&fit=crop'
-  },
-  {
-    name: 'Signature Facial',
-    price: 'From $95',
-    image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&h=800&fit=crop'
-  },
-  {
-    name: 'Gel Manicure',
-    price: 'From $55',
-    image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&h=800&fit=crop'
-  }
-]
+const API_BASE = 'http://localhost:8000'
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=800&fit=crop'
 
 function Home() {
+  const [signatureServices, setSignatureServices] = useState([])
+
+  useEffect(() => {
+    axios
+      .get(`${API_BASE}/api/services`)
+      .then((res) => {
+        const mapped = res.data.slice(0, 4).map((s) => ({
+          name: s.name,
+          price: s.price != null ? `₹${Number(s.price)}` : 'Price on request',
+          image: s.image_url || FALLBACK_IMAGE
+        }))
+        setSignatureServices(mapped)
+      })
+      .catch(() => setSignatureServices([]))
+  }, [])
+
   return (
     <div className="home">
       <Navbar activePage="home" />

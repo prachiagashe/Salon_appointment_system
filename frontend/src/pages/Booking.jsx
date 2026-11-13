@@ -1,29 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
+import axios from 'axios'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../context/AuthContext'
 import './Booking.css'
 
-const services = [
-  'Haircut & Styling',
-  'Hair Coloring',
-  'Balayage',
-  'Highlights',
-  'Hair Spa',
-  'Basic Facial',
-  'Advanced Facial',
-  'Cleanup',
-  'Manicure',
-  'Pedicure',
-  'Nail Art',
-  'Gel Manicure',
-  'Party Makeup',
-  'Bridal Makeup',
-  'Body Massage',
-  'Head Massage',
-  'Aromatherapy',
-  'Hot Stone Therapy'
-]
+const API_BASE = 'http://localhost:8000'
 
 const staffList = [
   { id: 1, name: 'Sarah Johnson' },
@@ -48,6 +30,7 @@ function Booking() {
   const [searchParams] = useSearchParams()
 
   const [service, setService] = useState(searchParams.get('service') || '')
+  const [services, setServices] = useState([])
   const [staffId, setStaffId] = useState(searchParams.get('staffId') || searchParams.get('staff') || '')
   const [staffName, setStaffName] = useState(searchParams.get('staffName') || '')
   const [date, setDate] = useState('')
@@ -64,6 +47,13 @@ function Booking() {
       navigate(`/login?redirect=${encodeURIComponent(currentPath)}`, { replace: true })
     }
   }, [isAuthenticated, navigate])
+
+  useEffect(() => {
+    axios
+      .get(`${API_BASE}/api/services`)
+      .then((res) => setServices(res.data))
+      .catch(() => setServices([]))
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -204,7 +194,9 @@ function Booking() {
               >
                 <option value="">Choose a service...</option>
                 {services.map(s => (
-                  <option key={s} value={s}>{s}</option>
+                  <option key={s.id} value={s.name}>
+                    {s.name}{s.price != null ? ` — ₹${Number(s.price)}` : ''}{s.duration_minutes ? ` (${s.duration_minutes} min)` : ''}
+                  </option>
                 ))}
               </select>
             </div>

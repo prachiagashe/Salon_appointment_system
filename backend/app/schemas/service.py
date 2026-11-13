@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -8,9 +9,9 @@ class ServiceBase(BaseModel):
     category: Optional[str] = "General"
     description: Optional[str] = None
     price: Optional[float] = None
-    duration: Optional[str] = None
-    image: Optional[str] = None
-    is_active: Optional[int] = 1
+    duration_minutes: Optional[int] = None
+    image_url: Optional[str] = None
+    is_active: Optional[bool] = True
 
 
 class ServiceCreate(ServiceBase):
@@ -22,13 +23,15 @@ class ServiceUpdate(BaseModel):
     category: Optional[str] = None
     description: Optional[str] = None
     price: Optional[float] = None
-    duration: Optional[str] = None
-    image: Optional[str] = None
-    is_active: Optional[int] = None
+    duration_minutes: Optional[int] = None
+    image_url: Optional[str] = None
+    is_active: Optional[bool] = None
 
 
 class ServiceOut(ServiceBase):
     id: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

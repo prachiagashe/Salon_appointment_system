@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import ScrollToTop from './components/ScrollToTop'
 import { AdminRoute, CustomerRoute } from './components/ProtectedRoute'
+import PublicLayout from './components/layouts/PublicLayout'
+import AdminLayout from './components/layouts/AdminLayout'
 import Home from './pages/Home'
 import Services from './pages/Services'
 import Staff from './pages/Staff'
@@ -22,39 +24,43 @@ function App() {
       <AuthProvider>
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/staff" element={<Staff />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/book" element={<Booking />} />
-          <Route path="/booking" element={<Booking />} />
-          <Route
-            path="/profile"
-            element={
-              <CustomerRoute>
-                <Profile />
-              </CustomerRoute>
-            }
-          />
-          <Route
-            path="/my-appointments"
-            element={
-              <CustomerRoute>
-                <MyAppointments />
-              </CustomerRoute>
-            }
-          />
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/staff" element={<Staff />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/book" element={<Booking />} />
+            <Route path="/booking" element={<Booking />} />
+            <Route
+              path="/profile"
+              element={
+                <CustomerRoute>
+                  <Profile />
+                </CustomerRoute>
+              }
+            />
+            <Route
+              path="/my-appointments"
+              element={
+                <CustomerRoute>
+                  <MyAppointments />
+                </CustomerRoute>
+              }
+            />
+          </Route>
           <Route
             path="/admin"
             element={
               <AdminRoute>
-                <AdminPanel />
+                <AdminLayout />
               </AdminRoute>
             }
-          />
+          >
+            <Route index element={<AdminPanel />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

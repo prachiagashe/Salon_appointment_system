@@ -16,6 +16,32 @@ export function AuthProvider({ children }) {
         const parsed = JSON.parse(session)
         setUser(parsed.user)
         setToken(parsed.token)
+        // Refresh user data (incl. role) from the server; clear session if token is invalid
+        if (parsed.token) {
+          fetch(`${API_BASE}/api/auth/me`, {
+            headers: { Authorization: `Bearer ${parsed.token}` }
+          })
+            .then((res) => {
+              if (!res.ok) throw new Error('invalid session')
+              return res.json()
+            })
+            .then((data) => {
+              const freshUser = {
+                id: data.id,
+                name: data.full_name,
+                email: data.email,
+                phone: data.phone,
+                role: data.role
+              }
+              localStorage.setItem(SESSION_KEY, JSON.stringify({ user: freshUser, token: parsed.token }))
+              setUser(freshUser)
+            })
+            .catch(() => {
+              localStorage.removeItem(SESSION_KEY)
+              setUser(null)
+              setToken(null)
+            })
+        }
       } catch {
         localStorage.removeItem(SESSION_KEY)
       }
@@ -37,7 +63,8 @@ export function AuthProvider({ children }) {
         id: data.user.id,
         name: data.user.full_name,
         email: data.user.email,
-        phone: data.user.phone
+        phone: data.user.phone,
+        role: data.user.role
       }
       localStorage.setItem(SESSION_KEY, JSON.stringify({ user: sessionUser, token: data.access_token }))
       setUser(sessionUser)
@@ -63,7 +90,8 @@ export function AuthProvider({ children }) {
         id: data.user.id,
         name: data.user.full_name,
         email: data.user.email,
-        phone: data.user.phone
+        phone: data.user.phone,
+        role: data.user.role
       }
       localStorage.setItem(SESSION_KEY, JSON.stringify({ user: sessionUser, token: data.access_token }))
       setUser(sessionUser)

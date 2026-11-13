@@ -32,6 +32,7 @@ function Navbar({ activePage }) {
   }
 
   const initial = user?.name ? user.name.trim().charAt(0).toUpperCase() : 'U'
+  const isAdmin = user?.role?.toLowerCase() === 'admin'
 
   return (
     <nav className="navbar">
@@ -62,20 +63,32 @@ function Navbar({ activePage }) {
                     <span className="nav-dropdown-email">{user.email}</span>
                   </div>
                   <div className="nav-dropdown-divider"></div>
-                  <Link
-                    to="/profile"
-                    className="nav-dropdown-item"
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    My Profile
-                  </Link>
-                  <Link
-                    to="/my-appointments"
-                    className="nav-dropdown-item"
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    Booked Appointments
-                  </Link>
+                  {isAdmin ? (
+                    <Link
+                      to="/admin"
+                      className="nav-dropdown-item"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      Admin Dashboard
+                    </Link>
+                  ) : (
+                    <>
+                      <Link
+                        to="/profile"
+                        className="nav-dropdown-item"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        My Profile
+                      </Link>
+                      <Link
+                        to="/my-appointments"
+                        className="nav-dropdown-item"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        Booked Appointments
+                      </Link>
+                    </>
+                  )}
                   <div className="nav-dropdown-divider"></div>
                   <button className="nav-dropdown-item logout" onClick={handleLogout}>
                     Logout
@@ -109,8 +122,14 @@ function Navbar({ activePage }) {
         <Link to="/contact" onClick={closeMenu}>CONTACT</Link>
         {isAuthenticated ? (
           <>
-            <Link to="/profile" onClick={closeMenu}>MY PROFILE</Link>
-            <Link to="/my-appointments" onClick={closeMenu}>BOOKED APPOINTMENTS</Link>
+            {isAdmin ? (
+              <Link to="/admin" onClick={closeMenu}>ADMIN DASHBOARD</Link>
+            ) : (
+              <>
+                <Link to="/profile" onClick={closeMenu}>MY PROFILE</Link>
+                <Link to="/my-appointments" onClick={closeMenu}>BOOKED APPOINTMENTS</Link>
+              </>
+            )}
             <button className="logout-link" onClick={handleLogout}>LOGOUT</button>
           </>
         ) : (

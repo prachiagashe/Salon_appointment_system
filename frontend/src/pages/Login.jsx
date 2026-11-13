@@ -22,7 +22,14 @@ function Login() {
     }
     const result = await login({ email, password })
     if (result.success) {
-      navigate(redirect)
+      const session = JSON.parse(localStorage.getItem('salonease_session') || '{}')
+      const isAdmin = session?.user?.role?.toLowerCase() === 'admin'
+      const hasExplicitRedirect = !!searchParams.get('redirect')
+      if (isAdmin) {
+        navigate(hasExplicitRedirect ? redirect : '/admin')
+      } else {
+        navigate(hasExplicitRedirect ? redirect : '/')
+      }
     } else {
       setError(result.error)
     }

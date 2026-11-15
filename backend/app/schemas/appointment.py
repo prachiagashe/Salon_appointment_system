@@ -28,6 +28,7 @@ class AppointmentOut(BaseModel):
     notes: Optional[str] = None
     status: str
     cancellation_reason: Optional[str] = None
+    price: Optional[float] = None
     created_at: Optional[datetime] = None
 
     class Config:

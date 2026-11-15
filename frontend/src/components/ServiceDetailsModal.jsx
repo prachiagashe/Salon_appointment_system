@@ -16,11 +16,23 @@ function ServiceDetailsModal({ service, onClose, onBookNow }) {
           <div className="modal-details">
             <div className="modal-category">{service.category}</div>
             <h2 className="modal-title">{service.name}</h2>
-            
+            {service.hasOffer && (
+              <span className="offer-badge offer-badge-lg">
+                {service.offerLabel || `${service.discountPercent}% OFF`}
+              </span>
+            )}
+
             <div className="modal-meta">
               <div className="meta-item">
                 <span className="meta-label">Price:</span>
-                <span className="meta-value">${service.price}</span>
+                {service.hasOffer ? (
+                  <span className="meta-value">
+                    <span className="price-original">₹{service.price}</span>{' '}
+                    <strong className="price-offer">₹{service.finalPrice}</strong>
+                  </span>
+                ) : (
+                  <span className="meta-value">₹{service.price}</span>
+                )}
               </div>
               <div className="meta-item">
                 <span className="meta-label">Duration:</span>

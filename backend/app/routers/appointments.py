@@ -8,6 +8,7 @@ from app.core.deps import get_current_user
 from app.database import get_db
 from app.models.appointment import Appointment
 from app.models.notification import AdminNotification
+from app.models.service import Service
 from app.models.user import User
 from app.schemas.appointment import AppointmentCancel, AppointmentCreate, AppointmentOut
 from app.services.notification import (
@@ -38,6 +39,15 @@ def create_appointment(
         current_user.email if current_user else None
     )
 
+    # Lock in the service's current final price (offer-aware) so historical
+    # bookings stay accurate even if the offer later ends.
+    service = (
+        db.query(Service)
+        .filter(Service.name == booking_data.service_name, Service.is_active == True)  # noqa: E712
+        .first()
+    )
+    booking_price = service.final_price if service else None
+
     appointment = Appointment(
         user_id=current_user.id if current_user else None,
         customer_name=customer_name,
@@ -49,6 +59,7 @@ def create_appointment(
         appointment_time=booking_data.appointment_time,
         notes=booking_data.notes,
         status="Confirmed",
+        price=booking_price,
     )
     db.add(appointment)
     db.commit()

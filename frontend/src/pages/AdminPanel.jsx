@@ -4,7 +4,7 @@ import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import { useAdminShell } from '../components/layouts/AdminLayout'
 import {
-  CheckCircle, XCircle, Trash2, Plus, Pencil, Ban, ShieldCheck, Loader2,
+  CheckCircle, XCircle, Trash2, Plus, Pencil, Ban, Loader2,
   ChevronDown, ChevronRight, Search
 } from 'lucide-react'
 import './AdminPanel.css'
@@ -18,7 +18,7 @@ const STATUS_STYLES = {
   Cancelled: 'status-cancelled'
 }
 
-const EMPTY_SERVICE = { name: '', category: 'General', description: '', price: '', duration_minutes: '', image_url: '', is_active: true }
+const EMPTY_SERVICE = { name: '', category: 'General', description: '', price: '', duration_minutes: '', image_url: '', is_active: true, has_offer: false, discount_percent: '', offer_label: '' }
 const EMPTY_STAFF = { name: '', title: '', specialization: '', bio: '', image: '', availability: 'Available' }
 
 function AdminPanel() {
@@ -128,7 +128,10 @@ function AdminPanel() {
       const payload = {
         ...serviceForm,
         price: serviceForm.price === '' ? null : Number(serviceForm.price),
-        duration_minutes: serviceForm.duration_minutes === '' ? null : Number(serviceForm.duration_minutes)
+        duration_minutes: serviceForm.duration_minutes === '' ? null : Number(serviceForm.duration_minutes),
+        discount_percent: serviceForm.has_offer ? Number(serviceForm.discount_percent) || 0 : 0,
+        offer_label: serviceForm.has_offer ? (serviceForm.offer_label || '').trim() || null : null,
+        has_offer: !!serviceForm.has_offer
       }
       if (serviceForm.id) {
         await axios.put(`${API_BASE}/api/services/${serviceForm.id}`, payload, { headers })
@@ -150,6 +153,16 @@ function AdminPanel() {
       fetchAll()
     } catch (err) {
       if (!handle401(err)) showToast('Failed to update service.')
+    }
+  }
+
+  const removeServiceOffer = async (s) => {
+    try {
+      await axios.put(`${API_BASE}/api/services/${s.id}`, { has_offer: false, discount_percent: 0, offer_label: null }, { headers })
+      showToast('Offer removed.')
+      fetchAll()
+    } catch (err) {
+      if (!handle401(err)) showToast('Failed to remove offer.')
     }
   }
 
@@ -397,20 +410,22 @@ function AdminPanel() {
                         {users.map((u) => (
                           <tr key={u.id}>
                             <td>{u.full_name}</td><td>{u.email}</td><td>{u.phone || '—'}</td>
-                            <td><span className={`admin-badge ${u.role === 'admin' ? 'status-confirmed' : 'status-pending'}`}>{u.role}</span></td>
+                            <td>
+                              {u.email === 'admin@gmail.com' ? (
+                                <span className="admin-badge status-confirmed">ADMIN</span>
+                              ) : (
+                                <span className="admin-badge status-customer">CUSTOMER</span>
+                              )}
+                            </td>
                             <td>{u.is_active ? 'Active' : 'Inactive'}</td>
                             <td className="admin-actions">
-                              {u.id !== user.id && (
-                                <>
-                                  <button className="admin-mini-btn" onClick={() => updateUser(u.id, { role: u.role === 'admin' ? 'customer' : 'admin' })}>
-                                    <ShieldCheck size={13} /> {u.role === 'admin' ? 'Make Customer' : 'Make Admin'}
-                                  </button>
-                                  <button className="admin-mini-btn cancel" onClick={() => updateUser(u.id, { is_active: !u.is_active })}>
-                                    <Ban size={13} /> {u.is_active ? 'Deactivate' : 'Activate'}
-                                  </button>
-                                </>
+                              {u.email === 'admin@gmail.com' ? (
+                                <span className="admin-self admin-protected">Primary Admin (Protected)</span>
+                              ) : (
+                                <button className="admin-mini-btn cancel" onClick={() => updateUser(u.id, { is_active: !u.is_active })}>
+                                  <Ban size={13} /> {u.is_active ? 'Deactivate' : 'Activate'}
+                                </button>
                               )}
-                              {u.id === user.id && <span className="admin-self">(you)</span>}
                             </td>
                           </tr>
                         ))}
@@ -445,6 +460,42 @@ function AdminPanel() {
                           Active (visible to customers)
                         </label>
                         <textarea placeholder="Description" value={serviceForm.description} onChange={(e) => setServiceForm({ ...serviceForm, description: e.target.value })} className="admin-form-wide" />
+                        <div className="admin-form-wide admin-offer-section">
+                          <label className="admin-active-toggle">
+                            <input
+                              type="checkbox"
+                              checked={!!serviceForm.has_offer}
+                              onChange={(e) => setServiceForm({ ...serviceForm, has_offer: e.target.checked })}
+                            />
+                            Active Offer / Discount
+                          </label>
+                          {serviceForm.has_offer && (
+                            <div className="admin-offer-fields">
+                              <input
+                                placeholder="Discount % (0-90)"
+                                type="number"
+                                min="0"
+                                max="90"
+                                value={serviceForm.discount_percent}
+                                onChange={(e) => setServiceForm({ ...serviceForm, discount_percent: e.target.value })}
+                              />
+                              <input
+                                placeholder="Offer label (e.g. Festive Glow 20% OFF)"
+                                value={serviceForm.offer_label}
+                                onChange={(e) => setServiceForm({ ...serviceForm, offer_label: e.target.value })}
+                              />
+                              {serviceForm.price !== '' && serviceForm.price != null && Number(serviceForm.discount_percent) > 0 && (
+                                <p className="admin-offer-preview">
+                                  Original: ₹{Number(serviceForm.price)} → Offer Price: ₹
+                                  {(Number(serviceForm.price) * (1 - Number(serviceForm.discount_percent) / 100)).toFixed(2)}
+                                  {' '}<span className="admin-offer-save">
+                                    (Save ₹{(Number(serviceForm.price) * Number(serviceForm.discount_percent) / 100).toFixed(2)})
+                                  </span>
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="admin-form-actions">
                         <button className="admin-mini-btn confirm" onClick={saveService}>Save</button>
@@ -456,10 +507,29 @@ function AdminPanel() {
                     {services.map((s) => (
                       <div key={s.id} className={`admin-item-card${!s.is_active ? ' inactive' : ''}`}>
                         <h3>{s.name} {!s.is_active && <span className="admin-badge status-cancelled">Inactive</span>}</h3>
-                        <p className="admin-item-meta">{s.category} {s.price != null && `• ₹${s.price}`} {s.duration_minutes != null && `• ${s.duration_minutes} min`}</p>
+                        {s.has_offer && s.discount_percent > 0 && (
+                          <span className="admin-offer-pill">
+                            {s.discount_percent}% OFF{s.offer_label ? ` • ${s.offer_label}` : ''}
+                          </span>
+                        )}
+                        <p className="admin-item-meta">
+                          {s.category}{' '}
+                          {s.has_offer && s.discount_percent > 0 && s.price != null ? (
+                            <>
+                              <span className="admin-price-original">₹{Number(s.price)}</span>{' '}
+                              <strong className="admin-price-offer">₹{Number(s.final_price ?? s.price)}</strong>
+                            </>
+                          ) : (
+                            s.price != null && `• ₹${s.price}`
+                          )}
+                          {s.duration_minutes != null && ` • ${s.duration_minutes} min`}
+                        </p>
                         {s.description && <p className="admin-item-desc">{s.description}</p>}
                         <div className="admin-item-actions">
-                          <button className="admin-mini-btn" onClick={() => setServiceForm({ ...s, price: s.price ?? '', duration_minutes: s.duration_minutes ?? '' })}><Pencil size={13} /> Edit</button>
+                          <button className="admin-mini-btn" onClick={() => setServiceForm({ ...s, price: s.price ?? '', duration_minutes: s.duration_minutes ?? '', discount_percent: s.discount_percent ?? '', offer_label: s.offer_label ?? '' })}><Pencil size={13} /> Edit</button>
+                          {s.has_offer && (
+                            <button className="admin-mini-btn cancel" onClick={() => removeServiceOffer(s)}><XCircle size={13} /> Remove Offer</button>
+                          )}
                           <button className="admin-mini-btn" onClick={() => toggleServiceActive(s)}>{s.is_active ? 'Deactivate' : 'Activate'}</button>
                           <button className="admin-mini-btn cancel" onClick={() => deleteService(s.id)}><Trash2 size={13} /> Delete</button>
                         </div>

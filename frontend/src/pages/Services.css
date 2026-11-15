@@ -268,16 +268,19 @@
 
 .service-category-badge {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
   background-color: var(--color-primary-green);
   color: var(--color-white);
-  padding: 6px 15px;
+  padding: 0.35rem 0.85rem;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .service-content {
@@ -653,4 +656,62 @@
   .services-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ===== Offer / Discount styles ===== */
+.offer-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  background: linear-gradient(135deg, #D4AF37, #8a6d1f);
+  color: #141E18;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  white-space: nowrap;
+}
+
+.offer-badge-lg {
+  position: static;
+  display: inline-block;
+  margin: 8px 0 4px;
+}
+
+.offer-badge-sm {
+  position: static;
+  display: inline-block;
+  font-size: 10px;
+  padding: 3px 9px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.offer-badge-home {
+  position: static;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.price-original {
+  text-decoration: line-through;
+  opacity: 0.55;
+  font-weight: 400;
+  margin-right: 6px;
+}
+
+.price-offer {
+  color: #2E4A3E;
+}
+
+.service-image {
+  position: relative;
+}
+
+.modal-details .offer-badge {
+  position: static;
 }

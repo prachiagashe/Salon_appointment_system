@@ -194,6 +194,21 @@
 .status-pending { background-color: rgba(212,175,55,0.15); color: #8a6d1f; border: 1px solid rgba(212,175,55,0.4); }
 .status-completed { background-color: rgba(122,155,142,0.15); color: #4a6b5c; border: 1px solid rgba(122,155,142,0.4); }
 .status-cancelled { background-color: rgba(139,0,0,0.1); color: #8B0000; border: 1px solid rgba(139,0,0,0.3); }
+.status-customer { background-color: rgba(92,107,99,0.1); color: #5C6B63; border: 1px solid rgba(92,107,99,0.3); }
+
+.admin-protected {
+  font-style: normal;
+  color: #8a6d1f;
+  background-color: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
 
 .admin-actions {
   display: flex;
@@ -580,4 +595,61 @@
   .admin-tab.back { margin-top: 0; border-top: none; }
   .admin-form-grid { grid-template-columns: 1fr; }
   .admin-inquiry-head { flex-direction: column; }
+}
+
+/* ===== Service Offer styles ===== */
+.admin-offer-section {
+  border-top: 1px dashed var(--color-border);
+  padding-top: 14px;
+  margin-top: 6px;
+}
+
+.admin-offer-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.admin-offer-fields input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 13px;
+  background: var(--color-secondary-bg);
+}
+
+.admin-offer-preview {
+  font-size: 13px;
+  color: var(--color-secondary-text);
+  margin: 4px 0 0;
+}
+
+.admin-offer-save {
+  color: #2E7D4F;
+  font-weight: 700;
+}
+
+.admin-offer-pill {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a6d1f;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.admin-price-original {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+.admin-price-offer {
+  color: #2E4A3E;
 }

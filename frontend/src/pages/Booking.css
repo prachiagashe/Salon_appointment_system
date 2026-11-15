@@ -292,3 +292,44 @@
     flex-direction: column;
   }
 }
+
+/* ===== Offer / Discount + Booking Summary ===== */
+.booking-summary {
+  border: 1px solid var(--color-border, #e5e0d8);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 8px 0 24px;
+  background: var(--color-secondary-bg, #faf8f4);
+}
+
+.booking-summary-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2E4A3E;
+  margin: 0 0 14px;
+}
+
+.booking-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+  font-size: 14px;
+  border-bottom: 1px dashed rgba(0,0,0,0.08);
+}
+
+.booking-summary-row:last-child {
+  border-bottom: none;
+}
+
+.booking-summary-row > span:first-child {
+  color: var(--color-secondary-text, #6b7280);
+  font-weight: 600;
+}
+
+.booking-summary-row .price-offer {
+  color: #2E4A3E;
+}

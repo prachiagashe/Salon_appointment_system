@@ -31,6 +31,7 @@ function Booking() {
 
   const [service, setService] = useState(searchParams.get('service') || '')
   const [services, setServices] = useState([])
+  const selectedService = services.find((s) => s.name === service) || null
   const [staffId, setStaffId] = useState(searchParams.get('staffId') || searchParams.get('staff') || '')
   const [staffName, setStaffName] = useState(searchParams.get('staffName') || '')
   const [date, setDate] = useState('')
@@ -51,7 +52,14 @@ function Booking() {
   useEffect(() => {
     axios
       .get(`${API_BASE}/api/services`)
-      .then((res) => setServices(res.data))
+      .then((res) => {
+        setServices(res.data)
+        const serviceIdParam = searchParams.get('serviceId')
+        if (serviceIdParam && !service) {
+          const match = res.data.find((s) => String(s.id) === String(serviceIdParam))
+          if (match) setService(match.name)
+        }
+      })
       .catch(() => setServices([]))
   }, [])
 
@@ -195,7 +203,7 @@ function Booking() {
                 <option value="">Choose a service...</option>
                 {services.map(s => (
                   <option key={s.id} value={s.name}>
-                    {s.name}{s.price != null ? ` — ₹${Number(s.price)}` : ''}{s.duration_minutes ? ` (${s.duration_minutes} min)` : ''}
+                    {s.name}{s.price != null ? ` — ₹${s.has_offer && s.discount_percent > 0 && s.final_price != null ? Number(s.final_price) : Number(s.price)}` : ''}{s.duration_minutes ? ` (${s.duration_minutes} min)` : ''}{s.has_offer && s.discount_percent > 0 ? ' [OFFER]' : ''}
                   </option>
                 ))}
               </select>
@@ -282,6 +290,48 @@ function Booking() {
               </div>
             </div>
           </div>
+
+          {selectedService && selectedService.price != null && (
+            <div className="booking-summary">
+              <h3 className="booking-summary-title">Booking Summary</h3>
+              <div className="booking-summary-row">
+                <span>Service</span>
+                <span>
+                  {selectedService.name}
+                  {selectedService.has_offer && selectedService.discount_percent > 0 && (
+                    <span className="offer-badge offer-badge-sm">
+                      {selectedService.offer_label || `${selectedService.discount_percent}% OFF`}
+                    </span>
+                  )}
+                </span>
+              </div>
+              <div className="booking-summary-row">
+                <span>Price</span>
+                <span>
+                  {selectedService.has_offer && selectedService.discount_percent > 0 && selectedService.final_price != null ? (
+                    <>
+                      <span className="price-original">₹{Number(selectedService.price)}</span>{' '}
+                      <strong className="price-offer">₹{Number(selectedService.final_price)}</strong>
+                    </>
+                  ) : (
+                    `₹${Number(selectedService.price)}`
+                  )}
+                </span>
+              </div>
+              {staffName && (
+                <div className="booking-summary-row">
+                  <span>Stylist</span>
+                  <span>{staffName}</span>
+                </div>
+              )}
+              {date && time && (
+                <div className="booking-summary-row">
+                  <span>Schedule</span>
+                  <span>{date} at {time}</span>
+                </div>
+              )}
+            </div>
+          )}
 
           <button type="submit" className="booking-submit-btn">
             CONFIRM APPOINTMENT

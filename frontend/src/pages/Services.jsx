@@ -34,6 +34,10 @@ function Services() {
           description: s.description || '',
           fullDescription: s.description || '',
           price: s.price != null ? Number(s.price) : 0,
+          finalPrice: s.final_price != null ? Number(s.final_price) : (s.price != null ? Number(s.price) : 0),
+          hasOffer: !!s.has_offer && s.discount_percent > 0,
+          discountPercent: s.discount_percent || 0,
+          offerLabel: s.offer_label || null,
           duration: s.duration_minutes ? `${s.duration_minutes} mins` : '—',
           image: s.image_url || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop',
           benefits: []

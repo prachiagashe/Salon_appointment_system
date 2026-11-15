@@ -99,6 +99,22 @@ def migrate_services_table(db: Session) -> None:
         db.execute(text("ALTER TABLE services CHANGE image image_url VARCHAR(500) NULL"))
     if "updated_at" not in cols:
         db.execute(text("ALTER TABLE services ADD COLUMN updated_at DATETIME NULL"))
+    if "discount_percent" not in cols:
+        db.execute(text("ALTER TABLE services ADD COLUMN discount_percent INT NOT NULL DEFAULT 0"))
+    if "offer_label" not in cols:
+        db.execute(text("ALTER TABLE services ADD COLUMN offer_label VARCHAR(100) NULL"))
+    if "has_offer" not in cols:
+        db.execute(text("ALTER TABLE services ADD COLUMN has_offer TINYINT(1) NOT NULL DEFAULT 0"))
+    db.commit()
+
+
+def migrate_appointments_table(db: Session) -> None:
+    """Add missing columns to the appointments table without losing data."""
+    cols = {row[0] for row in db.execute(text("SHOW COLUMNS FROM appointments"))}
+    if "cancellation_reason" not in cols:
+        db.execute(text("ALTER TABLE appointments ADD COLUMN cancellation_reason VARCHAR(255) NULL"))
+    if "price" not in cols:
+        db.execute(text("ALTER TABLE appointments ADD COLUMN price DECIMAL(10,2) NULL"))
     db.commit()
 
 
@@ -146,6 +162,7 @@ def on_startup() -> None:
     db = SessionLocal()
     try:
         migrate_services_table(db)
+        migrate_appointments_table(db)
         seed_services(db)
         enforce_roles(db)
     finally:

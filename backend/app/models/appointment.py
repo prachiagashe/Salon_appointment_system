@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric, String, Text, func
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -19,6 +19,7 @@ class Appointment(Base):
     notes = Column(Text, nullable=True)
     status = Column(String(30), nullable=False, default="Confirmed")
     cancellation_reason = Column(String(255), nullable=True)
+    price = Column(Numeric(10, 2), nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
     user = relationship("User", backref="appointments")

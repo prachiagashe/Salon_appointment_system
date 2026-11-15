@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import Navbar from '../components/Navbar'
+import OfferPopupModal from '../components/OfferPopupModal'
 import Hero from '../components/Hero'
 import AppointmentBooking from '../components/AppointmentBooking'
 import MeetStylists from '../components/MeetStylists'
@@ -20,20 +21,39 @@ const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1560066984-138dadb4c03
 
 function Home() {
   const [signatureServices, setSignatureServices] = useState([])
+  const [offerServices, setOfferServices] = useState([])
+  const [showOfferPopup, setShowOfferPopup] = useState(false)
 
   useEffect(() => {
     axios
       .get(`${API_BASE}/api/services`)
       .then((res) => {
+        const offers = res.data.filter((s) => s.has_offer && s.discount_percent > 0)
+        setOfferServices(offers)
         const mapped = res.data.slice(0, 4).map((s) => ({
           name: s.name,
           price: s.price != null ? `₹${Number(s.price)}` : 'Price on request',
+          finalPrice: s.final_price != null ? `₹${Number(s.final_price)}` : null,
+          hasOffer: !!s.has_offer && s.discount_percent > 0 && s.price != null,
+          offerLabel: s.offer_label || (s.discount_percent ? `${s.discount_percent}% OFF` : null),
           image: s.image_url || FALLBACK_IMAGE
         }))
         setSignatureServices(mapped)
       })
       .catch(() => setSignatureServices([]))
   }, [])
+
+  useEffect(() => {
+    if (offerServices.length === 0) return
+    if (sessionStorage.getItem('silken_offer_popup_dismissed') === '1') return
+    const timer = setTimeout(() => setShowOfferPopup(true), 1200)
+    return () => clearTimeout(timer)
+  }, [offerServices])
+
+  const dismissOfferPopup = () => {
+    sessionStorage.setItem('silken_offer_popup_dismissed', '1')
+    setShowOfferPopup(false)
+  }
 
   return (
     <div className="home">
@@ -64,8 +84,18 @@ function Home() {
             <Link key={service.name} to="/services" className="home-service-card">
               <img src={service.image} alt={service.name} loading="lazy" />
               <div className="home-service-overlay">
+                {service.hasOffer && (
+                  <span className="offer-badge offer-badge-home">{service.offerLabel}</span>
+                )}
                 <span className="home-service-name">{service.name}</span>
-                <span className="home-service-price">{service.price}</span>
+                {service.hasOffer ? (
+                  <span className="home-service-price">
+                    <span className="price-original">{service.price}</span>{' '}
+                    <strong className="price-offer">{service.finalPrice}</strong>
+                  </span>
+                ) : (
+                  <span className="home-service-price">{service.price}</span>
+                )}
               </div>
             </Link>
           ))}
@@ -78,6 +108,9 @@ function Home() {
       <AppointmentBooking />
       <MeetStylists />
       <BeyondBeauty />
+      {showOfferPopup && (
+        <OfferPopupModal services={offerServices} onClose={dismissOfferPopup} />
+      )}
     </div>
   )
 }

@@ -117,6 +117,9 @@ def list_users(
     return db.query(User).order_by(User.created_at.desc()).all()
 
 
+PRIMARY_ADMIN_EMAIL = "admin@gmail.com"
+
+
 @router.put("/users/{user_id}", response_model=UserOut)
 def update_user(
     user_id: int,
@@ -128,14 +131,16 @@ def update_user(
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
     if data.role is not None:
-        if data.role not in ("admin", "customer"):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid role.")
-        if user.id == admin.id and data.role != "admin":
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You cannot remove your own admin role.")
-        user.role = data.role
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Role modification is disabled. Only the primary admin account holds admin privileges.",
+        )
     if data.is_active is not None:
-        if user.id == admin.id and not data.is_active:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You cannot deactivate your own account.")
+        if user.email == PRIMARY_ADMIN_EMAIL and not data.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="The primary admin account cannot be deactivated.",
+            )
         user.is_active = data.is_active
     db.commit()
     db.refresh(user)

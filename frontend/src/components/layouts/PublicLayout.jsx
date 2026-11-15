@@ -5,7 +5,11 @@ import { Outlet } from 'react-router-dom'
 // Navbar (and page-specific chrome); this wrapper keeps the route
 // tree explicit and reserves a single place for shared public chrome.
 function PublicLayout() {
-  return <Outlet />
+  return (
+    <div className="public-layout">
+      <Outlet />
+    </div>
+  )
 }
 
 export default PublicLayout

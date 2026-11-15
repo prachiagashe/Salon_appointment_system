@@ -5,47 +5,78 @@ const AuthContext = createContext(null)
 const SESSION_KEY = 'salonease_session'
 const API_BASE = 'http://localhost:8000'
 
+function readSession() {
+  try {
+    const session = localStorage.getItem(SESSION_KEY)
+    if (!session) return { user: null, token: null }
+    const parsed = JSON.parse(session)
+    return { user: parsed.user || null, token: parsed.token || null }
+  } catch {
+    localStorage.removeItem(SESSION_KEY)
+    return { user: null, token: null }
+  }
+}
+
+function mapUser(data) {
+  return {
+    id: data.id,
+    name: data.full_name,
+    email: data.email,
+    phone: data.phone,
+    role: data.role
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [token, setToken] = useState(null)
+  // Synchronously rehydrate from localStorage so protected routes never
+  // see user === null on the first render after a refresh.
+  const [initial] = useState(readSession)
+  const [user, setUser] = useState(initial.user)
+  const [token, setToken] = useState(initial.token)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const session = localStorage.getItem(SESSION_KEY)
-    if (session) {
-      try {
-        const parsed = JSON.parse(session)
-        setUser(parsed.user)
-        setToken(parsed.token)
-        // Refresh user data (incl. role) from the server; clear session if token is invalid
-        if (parsed.token) {
-          fetch(`${API_BASE}/api/auth/me`, {
-            headers: { Authorization: `Bearer ${parsed.token}` }
-          })
-            .then((res) => {
-              if (!res.ok) throw new Error('invalid session')
-              return res.json()
-            })
-            .then((data) => {
-              const freshUser = {
-                id: data.id,
-                name: data.full_name,
-                email: data.email,
-                phone: data.phone,
-                role: data.role
-              }
-              localStorage.setItem(SESSION_KEY, JSON.stringify({ user: freshUser, token: parsed.token }))
-              setUser(freshUser)
-            })
-            .catch(() => {
-              localStorage.removeItem(SESSION_KEY)
-              setUser(null)
-              setToken(null)
-            })
-        }
-      } catch {
-        localStorage.removeItem(SESSION_KEY)
-      }
+    if (!initial.token) {
+      setLoading(false)
+      return
     }
+
+    let cancelled = false
+
+    fetch(`${API_BASE}/api/auth/me`, {
+      headers: { Authorization: `Bearer ${initial.token}` }
+    })
+      .then(async (res) => {
+        if (res.status === 401) {
+          // Token expired/invalid — clear session
+          localStorage.removeItem(SESSION_KEY)
+          if (!cancelled) {
+            setUser(null)
+            setToken(null)
+          }
+          return null
+        }
+        if (!res.ok) {
+          // Transient server error — keep the cached session
+          return null
+        }
+        return res.json()
+      })
+      .then((data) => {
+        if (cancelled || !data) return
+        const freshUser = mapUser(data)
+        localStorage.setItem(SESSION_KEY, JSON.stringify({ user: freshUser, token: initial.token }))
+        setUser(freshUser)
+      })
+      .catch(() => {
+        // Network error — do NOT log the user out
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => { cancelled = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const register = async ({ name, email, phone, password }) => {
@@ -59,13 +90,7 @@ export function AuthProvider({ children }) {
       if (!res.ok) {
         return { success: false, error: data.detail || 'Registration failed.' }
       }
-      const sessionUser = {
-        id: data.user.id,
-        name: data.user.full_name,
-        email: data.user.email,
-        phone: data.user.phone,
-        role: data.user.role
-      }
+      const sessionUser = mapUser(data.user)
       localStorage.setItem(SESSION_KEY, JSON.stringify({ user: sessionUser, token: data.access_token }))
       setUser(sessionUser)
       setToken(data.access_token)
@@ -86,13 +111,7 @@ export function AuthProvider({ children }) {
       if (!res.ok) {
         return { success: false, error: data.detail || 'Invalid email or password.' }
       }
-      const sessionUser = {
-        id: data.user.id,
-        name: data.user.full_name,
-        email: data.user.email,
-        phone: data.user.phone,
-        role: data.user.role
-      }
+      const sessionUser = mapUser(data.user)
       localStorage.setItem(SESSION_KEY, JSON.stringify({ user: sessionUser, token: data.access_token }))
       setUser(sessionUser)
       setToken(data.access_token)
@@ -109,7 +128,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, isAuthenticated: !!user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   )

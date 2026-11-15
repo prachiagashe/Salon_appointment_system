@@ -9,8 +9,9 @@
   background-color: var(--color-secondary-bg);
 }
 
-/* Offset page content so it isn't hidden behind the fixed navbar */
-body {
+/* Offset public page content so it isn't hidden behind the fixed navbar.
+   Scoped to .public-layout so the admin workspace stays flush at top: 0. */
+.public-layout {
   padding-top: 72px;
 }
 
@@ -312,11 +313,11 @@ body {
 @media (max-width: 768px) {
   .nav-links,
   .nav-right {
-
-  body {
-    padding-top: 64px;
-  }
     display: none;
+  }
+
+  .public-layout {
+    padding-top: 64px;
   }
 
   .nav-hamburger {

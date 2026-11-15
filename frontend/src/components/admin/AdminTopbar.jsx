@@ -43,7 +43,7 @@ function AdminTopbar() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          View Live Website <ExternalLink size={13} />
+          <span className="admin-topbar-live-text">View Live Website</span> <ExternalLink size={13} />
         </a>
         <div className="admin-topbar-profile">
           <span className="admin-topbar-avatar">S</span>

@@ -19,9 +19,9 @@ function AdminLayout() {
     <AdminShellContext.Provider value={{ tab, setTab, badges, setBadges, mobileNavOpen, setMobileNavOpen }}>
       <div className="admin-workspace">
         <AdminSidebar />
-        <div className="admin-workspace-body">
+        <div className="admin-main-wrapper">
           <AdminTopbar />
-          <main className="admin-workspace-content">
+          <main className="admin-content">
             <Outlet />
           </main>
         </div>

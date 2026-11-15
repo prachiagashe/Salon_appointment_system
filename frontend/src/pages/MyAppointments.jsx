@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Navbar from '../components/Navbar'
+import CancelAppointmentModal from '../components/CancelAppointmentModal'
 import { useAuth } from '../context/AuthContext'
 import { Calendar, Clock, Scissors, Loader2, XCircle, CheckCircle, Sparkles } from 'lucide-react'
 import './MyAppointments.css'
@@ -22,6 +23,7 @@ function MyAppointments() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [cancellingId, setCancellingId] = useState(null)
+  const [cancelTarget, setCancelTarget] = useState(null)
   const [toast, setToast] = useState('')
 
   useEffect(() => {
@@ -60,16 +62,20 @@ function MyAppointments() {
     fetchAppointments()
   }, [fetchAppointments])
 
-  const handleCancel = async (appt) => {
-    if (!window.confirm('Are you sure you want to cancel this appointment?')) return
+  const handleCancelConfirm = async (reason) => {
+    const appt = cancelTarget
+    if (!appt) return
     setCancellingId(appt.id)
     try {
-      await axios.put(`${API_BASE}/api/appointments/${appt.id}/cancel`, null, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      setAppointments((prev) =>
-        prev.map((a) => (a.id === appt.id ? { ...a, status: 'Cancelled' } : a))
+      const res = await axios.put(
+        `${API_BASE}/api/appointments/${appt.id}/cancel`,
+        { status: 'Cancelled', cancellation_reason: reason },
+        { headers: { Authorization: `Bearer ${token}` } }
       )
+      setAppointments((prev) =>
+        prev.map((a) => (a.id === appt.id ? res.data : a))
+      )
+      setCancelTarget(null)
       showToast(`Appointment for ${appt.service_name} has been cancelled.`)
     } catch (err) {
       showToast(err.response?.data?.detail || 'Failed to cancel appointment.')
@@ -115,10 +121,17 @@ function MyAppointments() {
 
       {appt.notes && <p className="myappt-notes">Notes: "{appt.notes}"</p>}
 
+      {appt.status === 'Cancelled' && (
+        <p className="myappt-cancel-reason">
+          <strong>Cancellation reason:</strong>{' '}
+          {appt.cancellation_reason || 'No reason provided'}
+        </p>
+      )}
+
       {['Confirmed', 'Pending'].includes(appt.status) && (
         <button
           className="myappt-cancel-btn"
-          onClick={() => handleCancel(appt)}
+          onClick={() => setCancelTarget(appt)}
           disabled={cancellingId === appt.id}
         >
           {cancellingId === appt.id ? (
@@ -194,6 +207,13 @@ function MyAppointments() {
           </>
         )}
       </div>
+
+      <CancelAppointmentModal
+        appointment={cancelTarget}
+        submitting={cancellingId !== null}
+        onConfirm={handleCancelConfirm}
+        onClose={() => setCancelTarget(null)}
+      />
     </div>
   )
 }

@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import { useAdminShell } from '../components/layouts/AdminLayout'
 import {
-  CheckCircle, XCircle, Trash2, Plus, Pencil, Ban, ShieldCheck, Loader2
+  CheckCircle, XCircle, Trash2, Plus, Pencil, Ban, ShieldCheck, Loader2,
+  ChevronDown, ChevronRight, Search
 } from 'lucide-react'
 import './AdminPanel.css'
 
@@ -35,6 +36,10 @@ function AdminPanel() {
   const [toast, setToast] = useState('')
   const [serviceForm, setServiceForm] = useState(null)
   const [staffForm, setStaffForm] = useState(null)
+  const [apptService, setApptService] = useState('all')
+  const [apptStatus, setApptStatus] = useState('All')
+  const [apptSearch, setApptSearch] = useState('')
+  const [collapsedSvcs, setCollapsedSvcs] = useState({})
 
   const headers = { Authorization: `Bearer ${token}` }
 
@@ -185,6 +190,48 @@ function AdminPanel() {
     }
   }
 
+  // ---------- Appointments grouping / filtering ----------
+
+  const filteredAppts = useMemo(() => {
+    const q = apptSearch.trim().toLowerCase()
+    return appointments.filter((a) => {
+      if (apptStatus !== 'All' && a.status !== apptStatus) return false
+      if (!q) return true
+      return [a.customer_name, a.customer_email, a.phone, a.staff_name]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(q))
+    })
+  }, [appointments, apptStatus, apptSearch])
+
+  const serviceNames = useMemo(() => {
+    const names = new Set()
+    appointments.forEach((a) => a.service_name && names.add(a.service_name))
+    services.filter((s) => s.is_active).forEach((s) => s.name && names.add(s.name))
+    return [...names].sort((x, y) => x.localeCompare(y))
+  }, [appointments, services])
+
+  const serviceCounts = useMemo(() => {
+    const counts = {}
+    filteredAppts.forEach((a) => {
+      counts[a.service_name] = (counts[a.service_name] || 0) + 1
+    })
+    return counts
+  }, [filteredAppts])
+
+  const groupedAppts = useMemo(() => {
+    const groups = {}
+    filteredAppts.forEach((a) => {
+      const key = a.service_name || 'Other'
+      if (!groups[key]) groups[key] = []
+      groups[key].push(a)
+    })
+    return groups
+  }, [filteredAppts])
+
+  const toggleSvcCollapse = (name) => {
+    setCollapsedSvcs((prev) => ({ ...prev, [name]: !prev[name] }))
+  }
+
   if (!isAuthenticated || (user && user.role !== 'admin')) return null
 
   return (
@@ -233,27 +280,109 @@ function AdminPanel() {
               {tab === 'appointments' && (
                 <div className="admin-section">
                   <h1 className="admin-title">All Appointments</h1>
-                  <div className="admin-table-wrap">
-                    <table className="admin-table">
-                      <thead><tr><th>Customer</th><th>Contact</th><th>Service</th><th>Staff</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead>
-                      <tbody>
-                        {appointments.map((a) => (
-                          <tr key={a.id}>
-                            <td>{a.customer_name}</td>
-                            <td>{a.customer_email || a.phone || '—'}</td>
-                            <td>{a.service_name}</td><td>{a.staff_name}</td>
-                            <td>{a.appointment_date}</td><td>{a.appointment_time}</td>
-                            <td><span className={`admin-badge ${STATUS_STYLES[a.status]}`}>{a.status}</span></td>
-                            <td className="admin-actions">
-                              {a.status !== 'Confirmed' && <button className="admin-mini-btn confirm" onClick={() => updateApptStatus(a.id, 'Confirmed')}><CheckCircle size={13} /> Confirm</button>}
-                              {a.status !== 'Completed' && <button className="admin-mini-btn complete" onClick={() => updateApptStatus(a.id, 'Completed')}><CheckCircle size={13} /> Done</button>}
-                              {a.status !== 'Cancelled' && <button className="admin-mini-btn cancel" onClick={() => updateApptStatus(a.id, 'Cancelled')}><XCircle size={13} /> Cancel</button>}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+
+                  {/* Quick filters */}
+                  <div className="appt-filters">
+                    <div className="appt-search-row">
+                      <div className="appt-search">
+                        <Search size={15} />
+                        <input
+                          type="text"
+                          placeholder="Search customer, contact, or staff..."
+                          value={apptSearch}
+                          onChange={(e) => setApptSearch(e.target.value)}
+                        />
+                      </div>
+                      <select
+                        className="appt-status-select"
+                        value={apptStatus}
+                        onChange={(e) => setApptStatus(e.target.value)}
+                      >
+                        <option value="All">All Statuses</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    </div>
+
+                    {/* Service pills */}
+                    <div className="appt-pills">
+                      <button
+                        className={`appt-pill${apptService === 'all' ? ' active' : ''}`}
+                        onClick={() => setApptService('all')}
+                      >
+                        All Services (Grouped)
+                        <span className="appt-pill-count">{filteredAppts.length}</span>
+                      </button>
+                      {serviceNames.map((name) => (
+                        <button
+                          key={name}
+                          className={`appt-pill${apptService === name ? ' active' : ''}`}
+                          onClick={() => setApptService(name)}
+                        >
+                          {name}
+                          <span className="appt-pill-count">{serviceCounts[name] || 0}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
+
+                  {/* Grouped service cards */}
+                  {(apptService === 'all' ? serviceNames : [apptService]).map((name) => {
+                    const list = groupedAppts[name] || []
+                    const collapsed = apptService === 'all' && collapsedSvcs[name]
+                    return (
+                      <div className="appt-service-card" key={name}>
+                        <button className="appt-service-head" onClick={() => toggleSvcCollapse(name)}>
+                          <span className="appt-service-name">{name}</span>
+                          <span className="appt-service-count">
+                            {list.length} Appointment{list.length !== 1 ? 's' : ''}
+                          </span>
+                          {collapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
+                        </button>
+                        {!collapsed && (
+                          list.length === 0 ? (
+                            <p className="admin-none appt-empty">No appointments match the current filters.</p>
+                          ) : (
+                            <div className="admin-table-wrap appt-table-wrap">
+                              <table className="admin-table">
+                                <thead><tr><th>Customer</th><th>Contact</th><th>Staff</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead>
+                                <tbody>
+                                  {list.map((a) => (
+                                    <tr key={a.id}>
+                                      <td>{a.customer_name}</td>
+                                      <td>{a.customer_email || a.phone || '—'}</td>
+                                      <td>{a.staff_name}</td>
+                                      <td>{a.appointment_date}</td><td>{a.appointment_time}</td>
+                                      <td><span className={`admin-badge ${STATUS_STYLES[a.status]}`}>{a.status}</span></td>
+                                      <td className="admin-actions">
+                                        {String(a.status).toLowerCase() === 'cancelled' ? (
+                                          <span
+                                            className="appt-cancel-reason"
+                                            title={a.cancellation_reason || 'Cancelled (No reason provided)'}
+                                          >
+                                            <strong>Reason:</strong>{' '}
+                                            {a.cancellation_reason || 'Cancelled (No reason provided)'}
+                                          </span>
+                                        ) : (
+                                          <>
+                                            {a.status !== 'Confirmed' && <button className="admin-mini-btn confirm" onClick={() => updateApptStatus(a.id, 'Confirmed')}><CheckCircle size={13} /> Confirm</button>}
+                                            {a.status !== 'Completed' && <button className="admin-mini-btn complete" onClick={() => updateApptStatus(a.id, 'Completed')}><CheckCircle size={13} /> Done</button>}
+                                            {a.status !== 'Cancelled' && <button className="admin-mini-btn cancel" onClick={() => updateApptStatus(a.id, 'Cancelled')}><XCircle size={13} /> Cancel</button>}
+                                          </>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               )}
 

@@ -7,8 +7,9 @@ from sqlalchemy.orm import Session
 from app.core.deps import get_current_user
 from app.database import get_db
 from app.models.appointment import Appointment
+from app.models.notification import AdminNotification
 from app.models.user import User
-from app.schemas.appointment import AppointmentCreate, AppointmentOut
+from app.schemas.appointment import AppointmentCancel, AppointmentCreate, AppointmentOut
 from app.services.notification import (
     send_booking_confirmation_sms,
     send_booking_confirmation_whatsapp,
@@ -52,6 +53,25 @@ def create_appointment(
     db.add(appointment)
     db.commit()
     db.refresh(appointment)
+
+    # Notify admins about the new booking (never break booking on failure)
+    try:
+        db.add(
+            AdminNotification(
+                appointment_id=appointment.id,
+                title="New Appointment Booked",
+                message=(
+                    f"{customer_name} booked {booking_data.service_name} "
+                    f"with {booking_data.staff_name} for "
+                    f"{booking_data.appointment_date} at {booking_data.appointment_time}"
+                ),
+                is_read=False,
+            )
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+        logger.exception("Failed to create admin notification for appointment %s", appointment.id)
 
     # Queue notifications AFTER commit so SMS/WhatsApp never delay the response
     # and can never roll back the booking.
@@ -99,6 +119,7 @@ def get_my_appointments(
 @router.put("/{appointment_id}/cancel", response_model=AppointmentOut)
 def cancel_appointment(
     appointment_id: int,
+    payload: AppointmentCancel,
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_current_user),
 ):
@@ -125,7 +146,34 @@ def cancel_appointment(
             detail=f"Cannot cancel an appointment with status '{appointment.status}'.",
         )
 
+    reason = payload.cancellation_reason.strip()
+    if len(reason) < 5:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Please provide a cancellation reason (at least 5 characters).",
+        )
+
     appointment.status = "Cancelled"
+    appointment.cancellation_reason = reason[:255]
     db.commit()
     db.refresh(appointment)
+
+    # Notify admins about the cancellation (never break the response on failure)
+    try:
+        db.add(
+            AdminNotification(
+                appointment_id=appointment.id,
+                title="Appointment Cancelled",
+                message=(
+                    f"{appointment.customer_name} cancelled their "
+                    f"{appointment.service_name} appointment. Reason: {reason}"
+                ),
+                is_read=False,
+            )
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+        logger.exception("Failed to create admin notification for cancelled appointment %s", appointment.id)
+
     return appointment

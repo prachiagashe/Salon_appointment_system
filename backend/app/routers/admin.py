@@ -35,6 +35,7 @@ class AdminStats(BaseModel):
 
 class AppointmentStatusUpdate(BaseModel):
     status: str
+    cancellation_reason: Optional[str] = None
 
 
 class UserRoleUpdate(BaseModel):
@@ -97,6 +98,9 @@ def update_appointment_status(
     appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
     if not appointment:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Appointment not found.")
+    if data.status == "Cancelled":
+        reason = (data.cancellation_reason or "").strip()
+        appointment.cancellation_reason = reason[:255] if reason else None
     appointment.status = data.status
     db.commit()
     db.refresh(appointment)

@@ -8,17 +8,40 @@ from app.core.security import hash_password
 from app.database import Base, SessionLocal, engine
 from app.models.user import User
 from app.models.service import Service
-from app.routers import admin, appointments, auth, contact, services
+from app.routers import admin, appointments, auth, contact, notifications, services
 
 # Import models so SQLAlchemy metadata is fully registered
 from app.models import appointment as _appointment  # noqa: F401
 from app.models import contact as _contact  # noqa: F401
+from app.models import notification as _notification  # noqa: F401
 from app.models import service as _service  # noqa: F401
 from app.models import staff as _staff  # noqa: F401
 from app.models import user as _user  # noqa: F401
 
 # Create tables if they don't exist yet
 Base.metadata.create_all(bind=engine)
+
+# Lightweight schema migration: add columns that create_all won't add to
+# existing tables (create_all only creates missing tables, never alters them).
+def _ensure_column(table: str, column: str, ddl: str) -> None:
+    try:
+        with engine.connect() as conn:
+            exists = conn.execute(
+                text(
+                    "SELECT COUNT(*) FROM information_schema.COLUMNS "
+                    "WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :t AND COLUMN_NAME = :c"
+                ),
+                {"t": table, "c": column},
+            ).scalar()
+            if not exists:
+                conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {ddl}"))
+                conn.commit()
+    except Exception:
+        # Never block startup on a migration hiccup
+        pass
+
+
+_ensure_column("appointments", "cancellation_reason", "cancellation_reason VARCHAR(255) NULL")
 
 ADMIN_EMAIL = "admin@gmail.com"
 ADMIN_PASSWORD = "12345678"
@@ -132,6 +155,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 app.include_router(appointments.router, prefix="/api/appointments", tags=["appointments"])
 app.include_router(contact.router, prefix="/api/contact", tags=["contact"])
+app.include_router(notifications.router, prefix="/api/admin/notifications", tags=["notifications"])
 app.include_router(services.router, prefix="/api/services", tags=["services"])
 
 # CORS Configuration

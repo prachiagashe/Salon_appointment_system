@@ -375,6 +375,176 @@
   cursor: pointer;
 }
 
+/* Appointments — filters & grouped services */
+.appt-filters {
+  margin-bottom: 24px;
+}
+
+.appt-search-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.appt-search {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-secondary-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0 12px;
+  color: var(--color-secondary-text);
+}
+
+.appt-search input {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 11px 0;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-main-text);
+  outline: none;
+}
+
+.appt-status-select {
+  padding: 11px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background-color: var(--color-secondary-bg);
+  color: var(--color-main-text);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.appt-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.appt-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-secondary-bg);
+  color: var(--color-main-text);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.appt-pill:hover {
+  border-color: #D4AF37;
+  color: #8a6d1f;
+}
+
+.appt-pill.active {
+  background-color: #2E4A3E;
+  border-color: #2E4A3E;
+  color: #FAF7F2;
+}
+
+.appt-pill.active:hover {
+  background-color: #D4AF37;
+  border-color: #D4AF37;
+  color: #141E18;
+}
+
+.appt-pill-count {
+  background-color: rgba(212, 175, 55, 0.18);
+  color: #8a6d1f;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.appt-pill.active .appt-pill-count {
+  background-color: rgba(250, 247, 242, 0.2);
+  color: #FAF7F2;
+}
+
+.appt-service-card {
+  background-color: var(--color-secondary-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.appt-service-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  color: var(--color-secondary-text);
+  transition: background-color 0.2s ease;
+}
+
+.appt-service-head:hover {
+  background-color: rgba(46, 74, 62, 0.05);
+}
+
+.appt-service-name {
+  font-family: 'Georgia', serif;
+  font-size: 17px;
+  color: var(--color-main-text);
+  flex: 1;
+}
+
+.appt-service-count {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.appt-service-card .appt-table-wrap {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+}
+
+.appt-empty {
+  padding: 24px 20px;
+}
+
+.appt-cancel-reason {
+  display: inline-block;
+  max-width: 320px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #7a2e35;
+  background-color: #FDF2F3;
+  border: 1px solid #F5C6CB;
+  border-radius: 6px;
+  padding: 7px 10px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.appt-cancel-reason strong {
+  font-weight: 700;
+}
+
 /* States */
 .admin-state {
   background-color: var(--color-secondary-bg);

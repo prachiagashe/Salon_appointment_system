@@ -207,6 +207,18 @@
   margin-bottom: 12px;
 }
 
+.myappt-cancel-reason {
+  font-size: 12px;
+  color: #7a2e35;
+  background-color: #FDF2F3;
+  border: 1px solid #F5C6CB;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
 .myappt-cancel-btn {
   display: inline-flex;
   align-items: center;

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class AppointmentCreate(BaseModel):
@@ -27,7 +27,13 @@ class AppointmentOut(BaseModel):
     appointment_time: str
     notes: Optional[str] = None
     status: str
+    cancellation_reason: Optional[str] = None
     created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
+
+
+class AppointmentCancel(BaseModel):
+    status: Optional[str] = None
+    cancellation_reason: str = Field(min_length=5, max_length=255)

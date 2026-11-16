@@ -31,6 +31,7 @@ function Booking() {
 
   const [service, setService] = useState(searchParams.get('service') || '')
   const [services, setServices] = useState([])
+  const [genderFilter, setGenderFilter] = useState('All')
   const selectedService = services.find((s) => s.name === service) || null
   const [staffId, setStaffId] = useState(searchParams.get('staffId') || searchParams.get('staff') || '')
   const [staffName, setStaffName] = useState(searchParams.get('staffName') || '')
@@ -194,6 +195,18 @@ function Booking() {
           <div className="form-row">
             <div className="form-group">
               <label className="form-label">Select Service *</label>
+              <div className="gender-toggle" role="group" aria-label="Filter services by section">
+                {['All', 'Ladies', 'Gents'].map((g) => (
+                  <button
+                    key={g}
+                    type="button"
+                    className={`gender-toggle-btn${genderFilter === g ? ' active' : ''}`}
+                    onClick={() => setGenderFilter(g)}
+                  >
+                    {g === 'All' ? 'All' : g === 'Ladies' ? 'Ladies' : 'Gents'}
+                  </button>
+                ))}
+              </div>
               <select
                 className="form-select"
                 value={service}
@@ -201,11 +214,13 @@ function Booking() {
                 required
               >
                 <option value="">Choose a service...</option>
-                {services.map(s => (
+                {services
+                  .filter((s) => genderFilter === 'All' || (s.gender_category || 'Unisex') === genderFilter || (s.gender_category || 'Unisex') === 'Unisex')
+                  .map(s => (
                   <option key={s.id} value={s.name}>
-                    {s.name}{s.price != null ? ` — ₹${s.has_offer && s.discount_percent > 0 && s.final_price != null ? Number(s.final_price) : Number(s.price)}` : ''}{s.duration_minutes ? ` (${s.duration_minutes} min)` : ''}{s.has_offer && s.discount_percent > 0 ? ' [OFFER]' : ''}
+                    {s.name}{s.price != null ? ` — ₹${s.has_offer && s.discount_percent > 0 && s.final_price != null ? Number(s.final_price) : Number(s.price)}` : ''}{s.duration_minutes ? ` (${s.duration_minutes} min)` : ''}{s.has_offer && s.discount_percent > 0 ? ' [OFFER]' : ''}{(s.gender_category || 'Unisex') !== 'Unisex' ? ` [${s.gender_category}]` : ''}
                   </option>
-                ))}
+                  ))}
               </select>
             </div>
 

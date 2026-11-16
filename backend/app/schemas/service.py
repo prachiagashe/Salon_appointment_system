@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 class ServiceBase(BaseModel):
     name: str
     category: Optional[str] = "General"
+    gender_category: Optional[str] = "Unisex"
     description: Optional[str] = None
     price: Optional[float] = None
     duration_minutes: Optional[int] = None
@@ -24,6 +25,7 @@ class ServiceCreate(ServiceBase):
 class ServiceUpdate(BaseModel):
     name: Optional[str] = None
     category: Optional[str] = None
+    gender_category: Optional[str] = None
     description: Optional[str] = None
     price: Optional[float] = None
     duration_minutes: Optional[int] = None

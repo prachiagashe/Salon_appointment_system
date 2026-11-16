@@ -653,3 +653,75 @@
 .admin-price-offer {
   color: #2E4A3E;
 }
+
+/* ===== Gender filter tabs & badges ===== */
+.admin-gender-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0 18px;
+  flex-wrap: wrap;
+}
+
+.admin-gender-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(46, 74, 62, 0.25);
+  background: #fff;
+  color: #2E4A3E;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-gender-tab:hover {
+  border-color: #2E4A3E;
+}
+
+.admin-gender-tab.active {
+  background: #2E4A3E;
+  border-color: #2E4A3E;
+  color: #FBF7EF;
+}
+
+.admin-gender-count {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(212, 175, 55, 0.3);
+  padding: 1px 7px;
+  border-radius: 10px;
+}
+
+.admin-gender-tab.active .admin-gender-count {
+  background: rgba(212, 175, 55, 0.9);
+  color: #141E18;
+}
+
+.admin-gender-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin: 4px 0 8px;
+}
+
+.admin-gender-badge.gender-ladies {
+  background: rgba(46, 74, 62, 0.12);
+  color: #2E4A3E;
+}
+
+.admin-gender-badge.gender-gents {
+  background: rgba(20, 30, 24, 0.85);
+  color: #D4AF37;
+}
+
+.admin-gender-badge.gender-unisex {
+  background: rgba(212, 175, 55, 0.25);
+  color: #8a6d1f;
+}

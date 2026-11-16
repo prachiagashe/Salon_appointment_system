@@ -15,23 +15,30 @@ router = APIRouter()
 @router.get("", response_model=List[ServiceOut])
 def list_services(
     include_inactive: bool = Query(False),
+    gender: Optional[str] = Query(None),
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_current_user),
 ):
-    """Public: active services only. include_inactive=true requires admin."""
+    """Public: active services only. include_inactive=true requires admin.
+    gender=Ladies|Gents returns that section plus Unisex services."""
     if include_inactive:
         if not current_user or (current_user.role or "").lower() != "admin":
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Admin access required to view inactive services.",
             )
-        return db.query(Service).order_by(Service.id).all()
-    return (
+        query = db.query(Service).order_by(Service.id)
+        if gender:
+            query = query.filter(Service.gender_category.in_([gender, "Unisex"]))
+        return query.all()
+    query = (
         db.query(Service)
         .filter(Service.is_active == True)  # noqa: E712
         .order_by(Service.category, Service.id)
-        .all()
     )
+    if gender:
+        query = query.filter(Service.gender_category.in_([gender, "Unisex"]))
+    return query.all()
 
 
 @router.post("", response_model=ServiceOut, status_code=status.HTTP_201_CREATED)

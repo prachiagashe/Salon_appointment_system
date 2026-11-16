@@ -333,3 +333,37 @@
 .booking-summary-row .price-offer {
   color: #2E4A3E;
 }
+
+/* ===== Gender toggle ===== */
+.gender-toggle {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 10px;
+  padding: 4px;
+  border-radius: 10px;
+  background: rgba(46, 74, 62, 0.08);
+  border: 1px solid rgba(46, 74, 62, 0.15);
+}
+
+.gender-toggle-btn {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #2E4A3E;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gender-toggle-btn:hover {
+  background: rgba(46, 74, 62, 0.1);
+}
+
+.gender-toggle-btn.active {
+  background: #2E4A3E;
+  color: #FBF7EF;
+  box-shadow: 0 2px 8px rgba(46, 74, 62, 0.3);
+}

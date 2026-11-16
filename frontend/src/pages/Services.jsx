@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../context/AuthContext'
@@ -13,6 +13,8 @@ const API_BASE = 'http://localhost:8000'
 
 function Services() {
   const [selectedCategory, setSelectedCategory] = useState('All')
+  const [genderTab, setGenderTab] = useState('All')
+  const [searchParams] = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
   const [priceRange, setPriceRange] = useState('all')
   const navigate = useNavigate()
@@ -31,6 +33,7 @@ function Services() {
           id: s.id,
           name: s.name,
           category: s.category || 'General',
+          genderCategory: s.gender_category || 'Unisex',
           description: s.description || '',
           fullDescription: s.description || '',
           price: s.price != null ? Number(s.price) : 0,
@@ -52,7 +55,23 @@ function Services() {
     fetchServices()
   }, [])
 
-  const categories = ['All', ...Array.from(new Set(services.map((s) => s.category)))].sort()
+  // Pre-select tab from ?gender= query param (e.g. /services?gender=Ladies)
+  useEffect(() => {
+    const g = searchParams.get('gender')
+    if (g === 'Ladies' || g === 'Gents') setGenderTab(g)
+  }, [searchParams])
+
+  const genderCounts = {
+    All: services.length,
+    Ladies: services.filter((s) => s.genderCategory === 'Ladies' || s.genderCategory === 'Unisex').length,
+    Gents: services.filter((s) => s.genderCategory === 'Gents' || s.genderCategory === 'Unisex').length
+  }
+
+  const genderFiltered = genderTab === 'All'
+    ? services
+    : services.filter((s) => s.genderCategory === genderTab || s.genderCategory === 'Unisex')
+
+  const categories = ['All', ...Array.from(new Set(genderFiltered.map((s) => s.category)))].sort()
 
   const handleBookNow = (service) => {
     const bookingPath = `/booking?service=${encodeURIComponent(service.name)}`
@@ -80,6 +99,25 @@ function Services() {
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
       />
+      {/* Gender section tabs */}
+      <section className="gender-tabs-section">
+        <div className="gender-tabs">
+          {[
+            { key: 'All', label: 'All Services' },
+            { key: 'Ladies', label: 'Ladies Salon' },
+            { key: 'Gents', label: 'Gents Salon' }
+          ].map((t) => (
+            <button
+              key={t.key}
+              className={`gender-tab${genderTab === t.key ? ' active' : ''}`}
+              onClick={() => { setGenderTab(t.key); setSelectedCategory('All') }}
+            >
+              {t.label}
+              <span className="gender-tab-count">{genderCounts[t.key]}</span>
+            </button>
+          ))}
+        </div>
+      </section>
       {loading ? (
         <section className="services-listing">
           <div className="listing-container">
@@ -101,7 +139,7 @@ function Services() {
         </section>
       ) : (
         <ServicesListing
-          services={services}
+          services={genderFiltered}
           selectedCategory={selectedCategory}
           searchTerm={searchTerm}
           priceRange={priceRange}

@@ -103,6 +103,16 @@ function Home() {
         <div className="home-services-cta">
           <Link to="/services">VIEW ALL SERVICES</Link>
         </div>
+        <div className="home-gender-links">
+          <Link to="/services?gender=Ladies" className="home-gender-link ladies">
+            <span className="home-gender-link-title">Explore Ladies Services</span>
+            <span className="home-gender-link-sub">Hair, skin, bridal & more</span>
+          </Link>
+          <Link to="/services?gender=Gents" className="home-gender-link gents">
+            <span className="home-gender-link-title">Explore Gents Services</span>
+            <span className="home-gender-link-sub">Cuts, grooming & styling</span>
+          </Link>
+        </div>
       </section>
 
       <AppointmentBooking />

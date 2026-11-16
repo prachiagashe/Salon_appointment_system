@@ -715,3 +715,92 @@
 .modal-details .offer-badge {
   position: static;
 }
+
+/* ===== Gender section tabs & badges ===== */
+.gender-tabs-section {
+  padding: 28px 20px 8px;
+  background-color: var(--color-primary-bg, #FBF7EF);
+}
+
+.gender-tabs {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.gender-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 30px;
+  border-radius: 25px;
+  border: 2px solid var(--color-border, rgba(46, 74, 62, 0.25));
+  background-color: var(--color-secondary-bg, #fff);
+  color: var(--color-main-text, #141E18);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.gender-tab:hover {
+  border-color: var(--color-primary-green, #2E4A3E);
+  color: var(--color-primary-green, #2E4A3E);
+}
+
+.gender-tab.active {
+  background-color: var(--color-primary-green, #2E4A3E);
+  border-color: var(--color-primary-green, #2E4A3E);
+  color: var(--color-white, #fff);
+  box-shadow: 0 6px 18px rgba(46, 74, 62, 0.3);
+}
+
+.gender-tab-count {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(212, 175, 55, 0.25);
+  color: inherit;
+  padding: 2px 9px;
+  border-radius: 12px;
+}
+
+.gender-tab.active .gender-tab-count {
+  background: rgba(212, 175, 55, 0.95);
+  color: #141E18;
+}
+
+.gender-badge {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  z-index: 2;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.gender-badge.gender-ladies {
+  background: rgba(255, 255, 255, 0.92);
+  color: #2E4A3E;
+}
+
+.gender-badge.gender-gents {
+  background: rgba(20, 30, 24, 0.85);
+  color: #D4AF37;
+}
+
+.gender-badge.gender-unisex {
+  background: rgba(212, 175, 55, 0.9);
+  color: #141E18;
+}

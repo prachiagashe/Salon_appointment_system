@@ -18,7 +18,7 @@ const STATUS_STYLES = {
   Cancelled: 'status-cancelled'
 }
 
-const EMPTY_SERVICE = { name: '', category: 'General', description: '', price: '', duration_minutes: '', image_url: '', is_active: true, has_offer: false, discount_percent: '', offer_label: '' }
+const EMPTY_SERVICE = { name: '', category: 'General', gender_category: 'Unisex', description: '', price: '', duration_minutes: '', image_url: '', is_active: true, has_offer: false, discount_percent: '', offer_label: '' }
 const EMPTY_STAFF = { name: '', title: '', specialization: '', bio: '', image: '', availability: 'Available' }
 
 function AdminPanel() {
@@ -40,6 +40,7 @@ function AdminPanel() {
   const [apptStatus, setApptStatus] = useState('All')
   const [apptSearch, setApptSearch] = useState('')
   const [collapsedSvcs, setCollapsedSvcs] = useState({})
+  const [serviceGenderFilter, setServiceGenderFilter] = useState('All')
 
   const headers = { Authorization: `Bearer ${token}` }
 
@@ -442,12 +443,33 @@ function AdminPanel() {
                     <h1 className="admin-title">Services</h1>
                     <button className="admin-add-btn" onClick={() => setServiceForm({ ...EMPTY_SERVICE })}><Plus size={15} /> Add Service</button>
                   </div>
+
+                  {/* Gender filter tabs */}
+                  <div className="admin-gender-tabs">
+                    {['All', 'Ladies', 'Gents', 'Unisex'].map((g) => (
+                      <button
+                        key={g}
+                        className={`admin-gender-tab${serviceGenderFilter === g ? ' active' : ''}`}
+                        onClick={() => setServiceGenderFilter(g)}
+                      >
+                        {g === 'All' ? 'All Services' : g}
+                        <span className="admin-gender-count">
+                          {g === 'All' ? services.length : services.filter((s) => (s.gender_category || 'Unisex') === g).length}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                   {serviceForm && (
                     <div className="admin-form-card">
                       <h3>{serviceForm.id ? 'Edit Service' : 'New Service'}</h3>
                       <div className="admin-form-grid">
                         <input placeholder="Name *" value={serviceForm.name} onChange={(e) => setServiceForm({ ...serviceForm, name: e.target.value })} />
                         <input placeholder="Category" value={serviceForm.category} onChange={(e) => setServiceForm({ ...serviceForm, category: e.target.value })} />
+                        <select value={serviceForm.gender_category || 'Unisex'} onChange={(e) => setServiceForm({ ...serviceForm, gender_category: e.target.value })}>
+                          <option value="Ladies">Ladies</option>
+                          <option value="Gents">Gents</option>
+                          <option value="Unisex">Unisex</option>
+                        </select>
                         <input placeholder="Price (₹)" type="number" value={serviceForm.price} onChange={(e) => setServiceForm({ ...serviceForm, price: e.target.value })} />
                         <input placeholder="Duration (minutes)" type="number" value={serviceForm.duration_minutes} onChange={(e) => setServiceForm({ ...serviceForm, duration_minutes: e.target.value })} />
                         <input placeholder="Image URL" value={serviceForm.image_url} onChange={(e) => setServiceForm({ ...serviceForm, image_url: e.target.value })} className="admin-form-wide" />
@@ -504,9 +526,14 @@ function AdminPanel() {
                     </div>
                   )}
                   <div className="admin-cards-grid">
-                    {services.map((s) => (
+                    {services
+                      .filter((s) => serviceGenderFilter === 'All' || (s.gender_category || 'Unisex') === serviceGenderFilter)
+                      .map((s) => (
                       <div key={s.id} className={`admin-item-card${!s.is_active ? ' inactive' : ''}`}>
                         <h3>{s.name} {!s.is_active && <span className="admin-badge status-cancelled">Inactive</span>}</h3>
+                        <span className={`admin-gender-badge gender-${(s.gender_category || 'Unisex').toLowerCase()}`}>
+                          {s.gender_category || 'Unisex'}
+                        </span>
                         {s.has_offer && s.discount_percent > 0 && (
                           <span className="admin-offer-pill">
                             {s.discount_percent}% OFF{s.offer_label ? ` • ${s.offer_label}` : ''}
@@ -526,7 +553,7 @@ function AdminPanel() {
                         </p>
                         {s.description && <p className="admin-item-desc">{s.description}</p>}
                         <div className="admin-item-actions">
-                          <button className="admin-mini-btn" onClick={() => setServiceForm({ ...s, price: s.price ?? '', duration_minutes: s.duration_minutes ?? '', discount_percent: s.discount_percent ?? '', offer_label: s.offer_label ?? '' })}><Pencil size={13} /> Edit</button>
+                          <button className="admin-mini-btn" onClick={() => setServiceForm({ ...s, gender_category: s.gender_category || 'Unisex', price: s.price ?? '', duration_minutes: s.duration_minutes ?? '', discount_percent: s.discount_percent ?? '', offer_label: s.offer_label ?? '' })}><Pencil size={13} /> Edit</button>
                           {s.has_offer && (
                             <button className="admin-mini-btn cancel" onClick={() => removeServiceOffer(s)}><XCircle size={13} /> Remove Offer</button>
                           )}

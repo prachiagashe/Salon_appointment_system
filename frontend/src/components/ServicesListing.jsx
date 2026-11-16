@@ -115,6 +115,9 @@ function ServicesListing({
               <div className="service-image">
                 <img src={service.image} alt={service.name} />
                 <div className="service-category-badge">{service.category}</div>
+                <span className={`gender-badge gender-${(service.genderCategory || 'Unisex').toLowerCase()}`}>
+                  {service.genderCategory || 'Unisex'}
+                </span>
                 {service.hasOffer && (
                   <span className="offer-badge">
                     {service.offerLabel || `${service.discountPercent}% OFF`}

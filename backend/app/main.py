@@ -50,6 +50,7 @@ DEFAULT_SERVICES = [
     {
         "name": "Signature Haircut",
         "category": "Hair Care",
+        "gender_category": "Unisex",
         "description": "Precision cut and styling tailored to your face shape, finished with a wash and blow-dry.",
         "price": 50.00,
         "duration_minutes": 45,
@@ -58,6 +59,7 @@ DEFAULT_SERVICES = [
     {
         "name": "Hair Coloring",
         "category": "Hair Care",
+        "gender_category": "Unisex",
         "description": "Premium hair coloring using high-quality products for vibrant, long-lasting results.",
         "price": 120.00,
         "duration_minutes": 120,
@@ -66,6 +68,7 @@ DEFAULT_SERVICES = [
     {
         "name": "Bridal Styling",
         "category": "Makeup & Bridal",
+        "gender_category": "Ladies",
         "description": "Complete bridal package including consultation, trial, and day-of hair and makeup.",
         "price": 250.00,
         "duration_minutes": 150,
@@ -74,6 +77,7 @@ DEFAULT_SERVICES = [
     {
         "name": "Hydrating Facial",
         "category": "Skin Care",
+        "gender_category": "Ladies",
         "description": "Deep cleansing and hydrating facial to refresh and rejuvenate your skin.",
         "price": 60.00,
         "duration_minutes": 45,
@@ -82,6 +86,7 @@ DEFAULT_SERVICES = [
     {
         "name": "Manicure & Pedicure",
         "category": "Nail Care",
+        "gender_category": "Unisex",
         "description": "Complete nail care for hands and feet including shaping, cuticle care, and polish.",
         "price": 80.00,
         "duration_minutes": 90,
@@ -105,6 +110,8 @@ def migrate_services_table(db: Session) -> None:
         db.execute(text("ALTER TABLE services ADD COLUMN offer_label VARCHAR(100) NULL"))
     if "has_offer" not in cols:
         db.execute(text("ALTER TABLE services ADD COLUMN has_offer TINYINT(1) NOT NULL DEFAULT 0"))
+    if "gender_category" not in cols:
+        db.execute(text("ALTER TABLE services ADD COLUMN gender_category VARCHAR(20) NOT NULL DEFAULT 'Unisex'"))
     db.commit()
 
 

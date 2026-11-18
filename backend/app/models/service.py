@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import Boolean, Column, DateTime, Integer, Numeric, String, Text, func
 
 from app.database import Base
@@ -18,13 +20,23 @@ class Service(Base):
     discount_percent = Column(Integer, nullable=False, default=0)
     offer_label = Column(String(100), nullable=True)
     has_offer = Column(Boolean, nullable=False, default=False)
+    offer_expires_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
     @property
+    def is_offer_valid(self):
+        """True only while the offer is enabled, has a discount, and hasn't expired."""
+        if not self.has_offer or not self.discount_percent or self.discount_percent <= 0:
+            return False
+        if self.offer_expires_at is not None and self.offer_expires_at <= datetime.now():
+            return False
+        return True
+
+    @property
     def discounted_price(self):
         """Price after applying the active offer, or the regular price."""
-        if self.has_offer and self.discount_percent and self.discount_percent > 0 and self.price is not None:
+        if self.is_offer_valid and self.price is not None:
             return round(float(self.price) * (1 - self.discount_percent / 100), 2)
         return float(self.price) if self.price is not None else None
 

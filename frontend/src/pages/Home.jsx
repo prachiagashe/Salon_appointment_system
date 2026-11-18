@@ -19,6 +19,21 @@ const stats = [
 const API_BASE = 'http://localhost:8000'
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=800&fit=crop'
 
+const formatOfferEnds = (iso) => {
+  const d = new Date(iso)
+  if (isNaN(d)) return ''
+  const diffMs = d - new Date()
+  if (diffMs <= 0) return ''
+  const hours = Math.floor(diffMs / 3600000)
+  if (hours < 48) {
+    const days = Math.floor(hours / 24)
+    const h = hours % 24
+    const m = Math.floor((diffMs % 3600000) / 60000)
+    return `Ends in ${days > 0 ? `${days}d ` : ''}${h}h ${m}m`
+  }
+  return `Offer ends ${d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} at ${d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true })}`
+}
+
 function Home() {
   const [signatureServices, setSignatureServices] = useState([])
   const [offerServices, setOfferServices] = useState([])
@@ -28,14 +43,15 @@ function Home() {
     axios
       .get(`${API_BASE}/api/services`)
       .then((res) => {
-        const offers = res.data.filter((s) => s.has_offer && s.discount_percent > 0)
+        const offers = res.data.filter((s) => s.is_offer_valid)
         setOfferServices(offers)
         const mapped = res.data.slice(0, 4).map((s) => ({
           name: s.name,
           price: s.price != null ? `₹${Number(s.price)}` : 'Price on request',
           finalPrice: s.final_price != null ? `₹${Number(s.final_price)}` : null,
-          hasOffer: !!s.has_offer && s.discount_percent > 0 && s.price != null,
+          hasOffer: !!s.is_offer_valid,
           offerLabel: s.offer_label || (s.discount_percent ? `${s.discount_percent}% OFF` : null),
+          offerExpiresAt: s.offer_expires_at || null,
           image: s.image_url || FALLBACK_IMAGE
         }))
         setSignatureServices(mapped)

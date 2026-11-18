@@ -218,7 +218,7 @@ function Booking() {
                   .filter((s) => genderFilter === 'All' || (s.gender_category || 'Unisex') === genderFilter || (s.gender_category || 'Unisex') === 'Unisex')
                   .map(s => (
                   <option key={s.id} value={s.name}>
-                    {s.name}{s.price != null ? ` — ₹${s.has_offer && s.discount_percent > 0 && s.final_price != null ? Number(s.final_price) : Number(s.price)}` : ''}{s.duration_minutes ? ` (${s.duration_minutes} min)` : ''}{s.has_offer && s.discount_percent > 0 ? ' [OFFER]' : ''}{(s.gender_category || 'Unisex') !== 'Unisex' ? ` [${s.gender_category}]` : ''}
+                    {s.name}{s.price != null ? ` — ₹${s.is_offer_valid && s.final_price != null ? Number(s.final_price) : Number(s.price)}` : ''}{s.duration_minutes ? ` (${s.duration_minutes} min)` : ''}{s.is_offer_valid ? ' [OFFER]' : ''}{(s.gender_category || 'Unisex') !== 'Unisex' ? ` [${s.gender_category}]` : ''}
                   </option>
                   ))}
               </select>
@@ -313,7 +313,7 @@ function Booking() {
                 <span>Service</span>
                 <span>
                   {selectedService.name}
-                  {selectedService.has_offer && selectedService.discount_percent > 0 && (
+                  {selectedService.is_offer_valid && selectedService.discount_percent > 0 && (
                     <span className="offer-badge offer-badge-sm">
                       {selectedService.offer_label || `${selectedService.discount_percent}% OFF`}
                     </span>
@@ -323,7 +323,7 @@ function Booking() {
               <div className="booking-summary-row">
                 <span>Price</span>
                 <span>
-                  {selectedService.has_offer && selectedService.discount_percent > 0 && selectedService.final_price != null ? (
+                  {selectedService.is_offer_valid && selectedService.discount_percent > 0 && selectedService.final_price != null ? (
                     <>
                       <span className="price-original">₹{Number(selectedService.price)}</span>{' '}
                       <strong className="price-offer">₹{Number(selectedService.final_price)}</strong>

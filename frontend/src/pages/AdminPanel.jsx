@@ -18,7 +18,22 @@ const STATUS_STYLES = {
   Cancelled: 'status-cancelled'
 }
 
-const EMPTY_SERVICE = { name: '', category: 'General', gender_category: 'Unisex', description: '', price: '', duration_minutes: '', image_url: '', is_active: true, has_offer: false, discount_percent: '', offer_label: '' }
+const EMPTY_SERVICE = { name: '', category: 'General', gender_category: 'Unisex', description: '', price: '', duration_minutes: '', image_url: '', is_active: true, has_offer: false, discount_percent: '', offer_label: '', offer_expires_at: '' }
+
+const toLocalInputValue = (iso) => {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (isNaN(d)) return ''
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+const formatOfferExpiry = (iso) => {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (isNaN(d)) return ''
+  return d.toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })
+}
 const EMPTY_STAFF = { name: '', title: '', specialization: '', bio: '', image: '', availability: 'Available' }
 
 function AdminPanel() {
@@ -132,7 +147,8 @@ function AdminPanel() {
         duration_minutes: serviceForm.duration_minutes === '' ? null : Number(serviceForm.duration_minutes),
         discount_percent: serviceForm.has_offer ? Number(serviceForm.discount_percent) || 0 : 0,
         offer_label: serviceForm.has_offer ? (serviceForm.offer_label || '').trim() || null : null,
-        has_offer: !!serviceForm.has_offer
+        has_offer: !!serviceForm.has_offer,
+        offer_expires_at: serviceForm.has_offer && serviceForm.offer_expires_at ? new Date(serviceForm.offer_expires_at).toISOString() : null
       }
       if (serviceForm.id) {
         await axios.put(`${API_BASE}/api/services/${serviceForm.id}`, payload, { headers })
@@ -515,6 +531,27 @@ function AdminPanel() {
                                   </span>
                                 </p>
                               )}
+                              <div className="admin-offer-expiry">
+                                <label className="admin-offer-expiry-label">Offer Valid Until (End Date &amp; Time)</label>
+                                <div className="admin-offer-expiry-row">
+                                  <input
+                                    type="datetime-local"
+                                    min={toLocalInputValue(new Date().toISOString())}
+                                    value={serviceForm.offer_expires_at || ''}
+                                    onChange={(e) => setServiceForm({ ...serviceForm, offer_expires_at: e.target.value })}
+                                  />
+                                  {serviceForm.offer_expires_at && (
+                                    <button
+                                      type="button"
+                                      className="admin-mini-btn cancel"
+                                      onClick={() => setServiceForm({ ...serviceForm, offer_expires_at: '' })}
+                                    >
+                                      Clear / No Expiry
+                                    </button>
+                                  )}
+                                </div>
+                                <p className="admin-offer-expiry-hint">Leave empty for no expiry. Offer auto-hides after this time.</p>
+                              </div>
                             </div>
                           )}
                         </div>
@@ -539,6 +576,17 @@ function AdminPanel() {
                             {s.discount_percent}% OFF{s.offer_label ? ` • ${s.offer_label}` : ''}
                           </span>
                         )}
+                        {s.has_offer && s.discount_percent > 0 && (
+                          s.is_offer_valid ? (
+                            s.offer_expires_at && (
+                              <span className="admin-offer-expiry-note">
+                                Ends: {formatOfferExpiry(s.offer_expires_at)}
+                              </span>
+                            )
+                          ) : (
+                            <span className="admin-offer-expired">Offer Expired</span>
+                          )
+                        )}
                         <p className="admin-item-meta">
                           {s.category}{' '}
                           {s.has_offer && s.discount_percent > 0 && s.price != null ? (
@@ -553,7 +601,7 @@ function AdminPanel() {
                         </p>
                         {s.description && <p className="admin-item-desc">{s.description}</p>}
                         <div className="admin-item-actions">
-                          <button className="admin-mini-btn" onClick={() => setServiceForm({ ...s, gender_category: s.gender_category || 'Unisex', price: s.price ?? '', duration_minutes: s.duration_minutes ?? '', discount_percent: s.discount_percent ?? '', offer_label: s.offer_label ?? '' })}><Pencil size={13} /> Edit</button>
+                          <button className="admin-mini-btn" onClick={() => setServiceForm({ ...s, gender_category: s.gender_category || 'Unisex', price: s.price ?? '', duration_minutes: s.duration_minutes ?? '', discount_percent: s.discount_percent ?? '', offer_label: s.offer_label ?? '', offer_expires_at: toLocalInputValue(s.offer_expires_at) })}><Pencil size={13} /> Edit</button>
                           {s.has_offer && (
                             <button className="admin-mini-btn cancel" onClick={() => removeServiceOffer(s)}><XCircle size={13} /> Remove Offer</button>
                           )}

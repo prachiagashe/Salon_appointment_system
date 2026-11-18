@@ -1,5 +1,20 @@
 import React from 'react'
 
+const formatOfferEnds = (iso) => {
+  const d = new Date(iso)
+  if (isNaN(d)) return ''
+  const diffMs = d - new Date()
+  if (diffMs <= 0) return ''
+  const hours = Math.floor(diffMs / 3600000)
+  if (hours < 48) {
+    const days = Math.floor(hours / 24)
+    const h = hours % 24
+    const m = Math.floor((diffMs % 3600000) / 60000)
+    return `Ends in ${days > 0 ? `${days}d ` : ''}${h}h ${m}m`
+  }
+  return `Offer ends ${d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} at ${d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true })}`
+}
+
 function ServiceDetailsModal({ service, onClose, onBookNow }) {
   if (!service) return null
 
@@ -20,6 +35,9 @@ function ServiceDetailsModal({ service, onClose, onBookNow }) {
               <span className="offer-badge offer-badge-lg">
                 {service.offerLabel || `${service.discountPercent}% OFF`}
               </span>
+            )}
+            {service.hasOffer && service.offerExpiresAt && (
+              <p className="offer-ends-note">{formatOfferEnds(service.offerExpiresAt)}</p>
             )}
 
             <div className="modal-meta">

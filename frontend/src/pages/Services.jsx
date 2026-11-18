@@ -38,9 +38,10 @@ function Services() {
           fullDescription: s.description || '',
           price: s.price != null ? Number(s.price) : 0,
           finalPrice: s.final_price != null ? Number(s.final_price) : (s.price != null ? Number(s.price) : 0),
-          hasOffer: !!s.has_offer && s.discount_percent > 0,
+          hasOffer: !!s.is_offer_valid,
           discountPercent: s.discount_percent || 0,
           offerLabel: s.offer_label || null,
+          offerExpiresAt: s.offer_expires_at || null,
           duration: s.duration_minutes ? `${s.duration_minutes} mins` : '—',
           image: s.image_url || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop',
           benefits: []

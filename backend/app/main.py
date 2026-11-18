@@ -112,6 +112,8 @@ def migrate_services_table(db: Session) -> None:
         db.execute(text("ALTER TABLE services ADD COLUMN has_offer TINYINT(1) NOT NULL DEFAULT 0"))
     if "gender_category" not in cols:
         db.execute(text("ALTER TABLE services ADD COLUMN gender_category VARCHAR(20) NOT NULL DEFAULT 'Unisex'"))
+    if "offer_expires_at" not in cols:
+        db.execute(text("ALTER TABLE services ADD COLUMN offer_expires_at DATETIME NULL"))
     db.commit()
 
 

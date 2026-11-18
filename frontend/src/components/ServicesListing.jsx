@@ -1,6 +1,22 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+const formatOfferEnds = (iso) => {
+  const d = new Date(iso)
+  if (isNaN(d)) return ''
+  const now = new Date()
+  const diffMs = d - now
+  if (diffMs <= 0) return ''
+  const hours = Math.floor(diffMs / 3600000)
+  if (hours < 48) {
+    const days = Math.floor(hours / 24)
+    const h = hours % 24
+    const m = Math.floor((diffMs % 3600000) / 60000)
+    return `Ends in ${days > 0 ? `${days}d ` : ''}${h}h ${m}m`
+  }
+  return `Offer ends ${d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} at ${d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true })}`
+}
+
 function ServicesListing({
   services,
   selectedCategory,
@@ -122,6 +138,9 @@ function ServicesListing({
                   <span className="offer-badge">
                     {service.offerLabel || `${service.discountPercent}% OFF`}
                   </span>
+                )}
+                {service.hasOffer && service.offerExpiresAt && (
+                  <span className="offer-ends-tag">{formatOfferEnds(service.offerExpiresAt)}</span>
                 )}
               </div>
               <div className="service-content">

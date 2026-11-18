@@ -39,14 +39,14 @@ def create_appointment(
         current_user.email if current_user else None
     )
 
-    # Lock in the service's current final price (offer-aware) so historical
-    # bookings stay accurate even if the offer later ends.
+    # Lock in the service's current final price; expired offers fall back to
+    # the regular price via is_offer_valid.
     service = (
         db.query(Service)
         .filter(Service.name == booking_data.service_name, Service.is_active == True)  # noqa: E712
         .first()
     )
-    booking_price = service.final_price if service else None
+    booking_price = service.final_price if service and service.is_offer_valid else (float(service.price) if service and service.price is not None else None)
 
     appointment = Appointment(
         user_id=current_user.id if current_user else None,
